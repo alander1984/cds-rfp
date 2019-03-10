@@ -1,4 +1,4 @@
-core-ui-app:
+cds-rfp:
     datasource:
         host: 192.168.63.15
         port: 15432
@@ -11,6 +11,7 @@ hibernate:
         use_jdbc_metadata_defaults: false
         
 server:
+    port: 8081
     servlet:
         context-path: /cds-rfp
         
@@ -24,10 +25,10 @@ spring:
             enabled: false
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:postgresql://${core-ui-app.datasource.host}:${core-ui-app.datasource.port}/${core-ui-app.datasource.name}
+        url: jdbc:postgresql://${cds-rfp.datasource.host}:${cds-rfp.datasource.port}/${cds-rfp.datasource.name}
         name:
-        username: ${core-ui-app.datasource.username}
-        password: ${core-ui-app.datasource.password}
+        username: ${cds-rfp.datasource.username}
+        password: ${cds-rfp.datasource.password}
         hikari:
               idle-timeout: 90000
     jpa:
