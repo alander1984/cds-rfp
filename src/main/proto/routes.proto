@@ -1,0 +1,18 @@
+syntax = "proto3";
+option java_package = "tech.lmru.cdsrfp.service";
+option java_multiple_files = true;
+
+package routeservice;
+
+message Route {
+  int32 id = 1;
+  string code = 2;
+}
+
+message RouteRequest {
+    int32 id = 1;
+}
+
+service RouteService {
+   rpc GetRoute(RouteRequest) returns (Route) {}
+}

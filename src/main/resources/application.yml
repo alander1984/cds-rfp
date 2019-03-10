@@ -1,4 +1,6 @@
 cds-rfp:
+    grpc:
+        port: 8030
     datasource:
         host: 192.168.63.15
         port: 15432
