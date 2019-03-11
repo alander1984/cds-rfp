@@ -5,6 +5,7 @@ import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.ServerServiceDefinition;
+import io.grpc.ServerInterceptors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -65,8 +66,7 @@ public class GRPCServerRunner implements CommandLineRunner, DisposableBean {
                 .forEach(name -> {
                     BindableService srv = applicationContext.getBeanFactory().getBean(name, BindableService.class);
                     ServerServiceDefinition serviceDefinition = srv.bindService();
-                    serverBuilder.addService(serviceDefinition);
-
+                    serverBuilder.addService(ServerInterceptors.intercept(serviceDefinition,new AuthInterceptor()));
                     logger.info("'{}' service has been registered.", srv.getClass().getName());
                 });
         server = serverBuilder.build().start();
