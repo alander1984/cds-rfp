@@ -8,6 +8,7 @@ import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import tech.lmru.cdsrfp.config.ApplicationProperties;
+import tech.lmru.cdsrfp.security.CDSSecurity;
 import tech.lmru.cdsrfp.service.BeanUtils;
 
 
@@ -22,9 +23,9 @@ public class AuthInterceptor implements ServerInterceptor {
       Metadata headers,
       ServerCallHandler<ReqT, RespT> next) {
     // You need to implement validateIdentity
-    Object identity = validateIdentity(headers);
+    boolean identity = validateIdentity(headers);
     System.out.println(identity);
-    if (identity == null) { // this is optional, depending on your needs
+    if (!identity ) { // this is optional, depending on your needs
       // Assume user not authenticated
       call.close(Status.UNAUTHENTICATED.withDescription("some more info"),
                  new Metadata());
@@ -37,9 +38,16 @@ public class AuthInterceptor implements ServerInterceptor {
   //**
   //   Должно быть переопределено в конкретном микросервисе. Тут бизнес-логика определения прав     
   //
-  private Object validateIdentity(Metadata headers){
+  private boolean validateIdentity(Metadata headers){
         ApplicationProperties properties = BeanUtils.getBean(ApplicationProperties.class);
-      
-       return properties.getEnableGrpcSecurity()?null:new Object();
+        CDSSecurity cdsSecurity = BeanUtils.getBean(CDSSecurity.class);
+        Metadata.Key<String> key = Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER);
+        
+        String authHeader = headers.get(key);
+        System.out.println("ебучий токен1: "+headers);
+        authHeader = authHeader.substring(8);
+        System.out.println("ебучий токен2: "+authHeader);
+        cdsSecurity.checkTokenIsValid(authHeader);       
+       return properties.getEnableGrpcSecurity()?cdsSecurity.checkTokenIsValid(authHeader):true;
   }
 }

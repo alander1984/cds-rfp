@@ -1,5 +1,8 @@
 cds-rfp:
-    enable-grpc-security: false
+    enable-grpc-security: true
+    security:
+        host: 192.168.63.14
+        port: 33861
     grpc:
         port: 8030
     datasource:
