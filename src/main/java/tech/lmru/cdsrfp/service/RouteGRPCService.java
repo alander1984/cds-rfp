@@ -13,7 +13,8 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
       Object identity = AuthInterceptor.USER_IDENTITY.get();
       System.out.println("Validate object = "+identity);
       Route response = Route.newBuilder()
-                .setCode("Тестовый ответ")
+                .setCode("test responce")
+                .setId(777)
                 .build();
 
         responseObserver.onNext(response);

@@ -39,15 +39,16 @@ public class AuthInterceptor implements ServerInterceptor {
   //   Должно быть переопределено в конкретном микросервисе. Тут бизнес-логика определения прав     
   //
   private boolean validateIdentity(Metadata headers){
-        ApplicationProperties properties = BeanUtils.getBean(ApplicationProperties.class);
+      ApplicationProperties properties = BeanUtils.getBean(ApplicationProperties.class);
+      if (!properties.getEnableGrpcSecurity()) {
+          return true;
+      }
+      else {
         CDSSecurity cdsSecurity = BeanUtils.getBean(CDSSecurity.class);
         Metadata.Key<String> key = Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER);
-        
         String authHeader = headers.get(key);
-        System.out.println("ебучий токен1: "+headers);
-        authHeader = authHeader.substring(8);
-        System.out.println("ебучий токен2: "+authHeader);
-        cdsSecurity.checkTokenIsValid(authHeader);       
-       return properties.getEnableGrpcSecurity()?cdsSecurity.checkTokenIsValid(authHeader):true;
+        authHeader = authHeader.replaceFirst("Bearer ", "");
+       return cdsSecurity.checkTokenIsValid(authHeader);
+      }
   }
 }
