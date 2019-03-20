@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class OptimizationTask {
-    private Depot depot;
-    private Options options;
+    private Depot depot = new Depot();
+    private Options options = new Options();
     private Set<Location> locations = new HashSet<>();
     private Set<Vehicle> vehicles = new HashSet<>();
 	/**

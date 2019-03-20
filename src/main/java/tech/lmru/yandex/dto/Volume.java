@@ -2,19 +2,25 @@ package tech.lmru.yandex.dto;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class Volume {
     
     /**
      * Width, meters.
      */
+    @JsonInclude(Include.NON_NULL)
     private BigDecimal width_m;
     /**
      * Depth, meters.
      */
+    @JsonInclude(Include.NON_NULL)
     private BigDecimal depth_m;
     /**
      * Height, meters.
      */
+    @JsonInclude(Include.NON_NULL)
     private BigDecimal height_m;
 	/**
 	 * @return the width_m

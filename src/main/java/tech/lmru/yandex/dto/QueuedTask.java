@@ -1,8 +1,13 @@
 package tech.lmru.yandex.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class QueuedTask {
-    private String id;
+    private String id="0";
+    
     private QueuedStatus status = new QueuedStatus();
+    @JsonInclude(Include.NON_NULL)
     private String message;
 	/**
 	 * @return the id

@@ -3,8 +3,8 @@ package tech.lmru.yandex.dto;
 import java.math.BigDecimal;
 
 public class Point {
-    private BigDecimal lat;
-    private BigDecimal lon;
+    private BigDecimal lat = new BigDecimal(0);
+    private BigDecimal lon = new BigDecimal(0);
 	/**
 	 * @return the lat
 	 */

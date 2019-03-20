@@ -2,12 +2,17 @@ package tech.lmru.yandex.dto;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class ShipmentSize {
     private Volume volume = new Volume();
     /**
      * Size of shipment in custom units.
      */
+    @JsonInclude(Include.NON_NULL)
     private BigDecimal units;
+    @JsonInclude(Include.NON_NULL)
     private BigDecimal weight_kg;
 	/**
 	 * @return the volume

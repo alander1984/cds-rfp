@@ -1,5 +1,5 @@
 cds-rfp:
-    enable-grpc-security: true
+    enable-grpc-security: false
     security:
         host: 192.168.63.14
         port: 33861
@@ -11,6 +11,9 @@ cds-rfp:
         name: sampledb
         username: userUD6
         password: fXrgrCUiw7rXOXLe
+    yandex:
+        api-key: keykey
+        url: https://courier.common.yandex.ru/vrs/api/v1
 
 hibernate:
     temp:

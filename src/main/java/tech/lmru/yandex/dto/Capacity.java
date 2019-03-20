@@ -2,12 +2,18 @@ package tech.lmru.yandex.dto;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class Capacity {
+     @JsonInclude(Include.NON_NULL)
     private Volume volume = new Volume();
     /**
      * Amount of custom units a vehicle is able to carry.
      */
+     @JsonInclude(Include.NON_NULL)
     private BigDecimal units = new BigDecimal(0);
+     @JsonInclude(Include.NON_NULL)
     private BigDecimal weight_kg;
 	/**
 	 * @return the volume

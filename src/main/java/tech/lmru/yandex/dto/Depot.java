@@ -1,16 +1,23 @@
 package tech.lmru.yandex.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class Depot {
     
-    private int id;
+    private int id = 0;
+    
+    @JsonInclude(Include.NON_NULL)
     private tech.lmru.yandex.dto.Point point = new Point();
     /**
      * Allowed time window to visit location, in [D.]HH[:MM[:SS]] - [D.]HH[:MM[:SS]] format or ISO 8601 2018-09-06T10:15:00+03:00/2018-09-06T12:45:00+03:00, 2018-09-06T10:15:00Z/2018-09-06T12:45:00Z
      */
-    private String time_window;
+     @JsonInclude(Include.NON_NULL)
+    private String time_window = "09:00:00-17:59:59";
     /**
      * Location reference id.
      */
+     @JsonInclude(Include.NON_NULL)
     private String ref;
 	/**
 	 * @return the id

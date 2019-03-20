@@ -8,6 +8,7 @@ public class ApplicationProperties {
     private final Grpc grpc = new Grpc();
     private Boolean enableGrpcSecurity = false;
     private Security security = new Security();
+    private Yandex yandex = new Yandex();
 
     public Grpc getGrpc() { return grpc; }
 
@@ -18,6 +19,8 @@ public class ApplicationProperties {
     public void setEnableGrpcSecurity(Boolean enableGrpcSecurity){
         this.enableGrpcSecurity=enableGrpcSecurity;
     }
+
+
 
     public static class Grpc {
 
@@ -77,6 +80,52 @@ public class ApplicationProperties {
 		this.security = security;
 	}
     
-    
+ 
+    public class Yandex{
+        private String apiKey;
+        private String url;
+		/**
+		 * @return the apiKey
+		 */
+		public String getApiKey() {
+			return apiKey;
+		}
+		/**
+		 * @param apiKey the apiKey to set
+		 */
+		public void setApiKey(String apiKey) {
+			this.apiKey = apiKey;
+		}
+		/**
+		 * @return the url
+		 */
+		public String getUrl() {
+			return url;
+		}
+		/**
+		 * @param url the url to set
+		 */
+		public void setUrl(String url) {
+			this.url = url;
+		}
+        
+        
+    }
+
+
+
+	/**
+	 * @return the yandex
+	 */
+	public Yandex getYandex() {
+		return yandex;
+	}
+
+	/**
+	 * @param yandex the yandex to set
+	 */
+	public void setYandex(Yandex yandex) {
+		this.yandex = yandex;
+	}
 
 }

@@ -3,16 +3,21 @@ package tech.lmru.yandex.dto;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 
 public class Vehicle {
-    private int id;
+    private int id=0;
     private Capacity capacity = new Capacity();
     /**
      * Priority of vehicle (the higher the priority, the more likely it is used).
      */
+    @JsonInclude(Include.NON_NULL)
     private int priority;
     private Set<Shift> shifts = new HashSet<>();
     private Cost cost = new Cost();
+    @JsonInclude(Include.NON_NULL)
     private String company_name;
     /**
      * List of locations to be visited by a vehicle in exact order as fixed part of the route without optimizations, with optional time of arrival for already visited locations.

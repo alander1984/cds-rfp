@@ -2,6 +2,9 @@ package tech.lmru.yandex.dto;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class Location {
     
     private int id;
@@ -9,10 +12,12 @@ public class Location {
     /**
      * Allowed time window to visit location, in [D.]HH[:MM[:SS]] - [D.]HH[:MM[:SS]] format or ISO 8601 2018-09-06T10:15:00+03:00/2018-09-06T12:45:00+03:00, 2018-09-06T10:15:00Z/2018-09-06T12:45:00Z
      */
+    @JsonInclude(Include.NON_NULL)
     private String time_window;
     /**
      * Restricts time window relaxation during route planning.If location can not be visited within specified time window, it will be excluded from route and added to to dropped_orders field in response. This field is useful to model orders, that can not be completed when time window is failed due to conflicts with other orders.
      */
+     @JsonInclude(Include.NON_NULL)
     private boolean hard_window = false;
     private ShipmentSize shipment_size = new ShipmentSize();
     /**
