@@ -10,6 +10,7 @@ HELP.md
 .settings
 .springBeans
 .sts4-cache
+dependency-reduced-pom.xml
 
 ### IntelliJ IDEA ###
 .idea
