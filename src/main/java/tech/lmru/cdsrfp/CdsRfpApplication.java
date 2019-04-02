@@ -5,10 +5,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
 
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import tech.lmru.cdsrfp.config.ApplicationProperties;
 
 @SpringBootApplication
 @EnableConfigurationProperties({ApplicationProperties.class })
+@EnableJpaRepositories(basePackages = "tech.lmru")
 @ComponentScan({"tech.lmru.cdsrfp","tech.lmru.yandex"})
 public class CdsRfpApplication {
 
