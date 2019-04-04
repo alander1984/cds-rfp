@@ -4,8 +4,7 @@ option java_multiple_files = true;
 
 package deliveryservice;
 
-message Empty2 {
-}
+import "common.proto";
 
 enum DeliveryStatusEnum {
     NEW = 0;
@@ -75,28 +74,15 @@ message User {
     string code = 2;
     string name = 3;
     string password = 4;
-    repeated Role roles = 5;
 }
 
-message Permission {
-    int32 id = 1;
-    string code = 2;
-    string name = 3;
-}
-
-message Role {
-    int32 id = 1;
-    string code = 2;
-    string name = 3;
-    repeated Permission permissions = 4;
-}
 
 message DeliveryAllResponse {
     repeated Delivery deliveries = 1;
 }
 
 service DeliveryService {
-    rpc readAllDelivery(Empty2) returns (DeliveryAllResponse);
+    rpc readAllDelivery(Empty) returns (DeliveryAllResponse);
 }
 
 

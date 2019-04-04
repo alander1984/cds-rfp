@@ -4,9 +4,8 @@ option java_multiple_files = true;
 
 package transportservice;
 
+import "common.proto";
 
-message Empty {
-}
 
 message Driver {
     int64 id = 1;
