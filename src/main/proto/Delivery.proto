@@ -50,7 +50,6 @@ message DeliveryItem {
     int64 loadedQuantity = 9;
     int64 approvedQuantity = 10;
     DeliveryStatusEnum status = 11;
-    Delivery delivery = 12;
 }
 
 message Store {
@@ -71,9 +70,7 @@ message Store {
 
 message User {
     int32 id = 1;
-    string code = 2;
     string name = 3;
-    string password = 4;
 }
 
 
