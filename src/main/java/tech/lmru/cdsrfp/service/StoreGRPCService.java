@@ -16,7 +16,7 @@ import tech.lmru.grpc.GRPCService;
 import tech.lmru.repo.StoreRepository;
 
 @GRPCService
-public class StoreGRPCService extends tech.lmru.cdsrfp.service.StoreServiceGrpc.StoreServiceImplBase {
+public class StoreGRPCService extends tech.lmru.cdsrfp.storeservice.StoreServiceGrpc.StoreServiceImplBase {
     
     private StoreRepository repository;
     
@@ -29,7 +29,7 @@ public class StoreGRPCService extends tech.lmru.cdsrfp.service.StoreServiceGrpc.
     @Transactional
     @Override
     public void createOrUpdateStore(tech.lmru.cdsrfp.service.Store request,
-        io.grpc.stub.StreamObserver<tech.lmru.cdsrfp.service.StoreCreateResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<tech.lmru.cdsrfp.storeservice.StoreCreateResponse> responseObserver) {
             tech.lmru.entity.store.Store store = new tech.lmru.entity.store.Store();
             
             
@@ -52,7 +52,7 @@ public class StoreGRPCService extends tech.lmru.cdsrfp.service.StoreServiceGrpc.
     }
 
     @Override
-    public void getStoreById(tech.lmru.cdsrfp.service.StoreIdRequest request,
+    public void getStoreById(tech.lmru.cdsrfp.storeservice.StoreIdRequest request,
         io.grpc.stub.StreamObserver<tech.lmru.cdsrfp.service.Store> responseObserver) {
             
         Optional<tech.lmru.entity.store.Store> byId = repository.findById(Long.parseLong(request.getId()));
@@ -80,7 +80,7 @@ public class StoreGRPCService extends tech.lmru.cdsrfp.service.StoreServiceGrpc.
 
     @Override
     public void getAllStore(tech.lmru.cdsrfp.service.Empty request,
-        io.grpc.stub.StreamObserver<tech.lmru.cdsrfp.service.StoreGetAllResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<tech.lmru.cdsrfp.storeservice.StoreGetAllResponse> responseObserver) {
             
             List<tech.lmru.entity.store.Store> storesEntity = repository.findAll();
             for(tech.lmru.entity.store.Store store1 : storesEntity) {
@@ -105,8 +105,8 @@ public class StoreGRPCService extends tech.lmru.cdsrfp.service.StoreServiceGrpc.
     
     @Transactional
     @Override
-    public void deleteStoreById(tech.lmru.cdsrfp.service.StoreIdRequest request,
-        io.grpc.stub.StreamObserver<tech.lmru.cdsrfp.service.StoreDeleteResponse> responseObserver) {
+    public void deleteStoreById(tech.lmru.cdsrfp.storeservice.StoreIdRequest request,
+        io.grpc.stub.StreamObserver<tech.lmru.cdsrfp.storeservice.StoreDeleteResponse> responseObserver) {
             
             Long id = Long.parseLong(request.getId());
             StoreDeleteResponse response = null;
