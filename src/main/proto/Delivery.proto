@@ -18,8 +18,8 @@ enum DeliveryStatusEnum {
 
 message Delivery {
     int64 id = 1;
-    int64 lat = 2;
-    int64 lon = 3;
+    double lat = 2;
+    double lon = 3;
     string timeWindow = 4;
     User createUser = 5;
     string createdDate = 6;
@@ -42,30 +42,14 @@ message DeliveryItem {
     int64 id = 1;
     string productLMCode = 2;
     string productLMName = 3;
-    int64 weight = 4;
-    int64 volume = 5;
-    int64 width = 6;
-    int64 length = 7;
-    int64 quantity = 8;
-    int64 loadedQuantity = 9;
-    int64 approvedQuantity = 10;
+    double weight = 4;
+    double volume = 5;
+    double width = 6;
+    double length = 7;
+    double quantity = 8;
+    double loadedQuantity = 9;
+    double approvedQuantity = 10;
     DeliveryStatusEnum status = 11;
-}
-
-message Store {
-    int64 id = 1;
-    enum StoreTypeEnum {
-        OFFLINE = 0;
-        ONLINE = 1;
-    }
-    StoreTypeEnum type = 2;
-    string name = 3;
-    string address = 4;
-    string code = 5;
-    int64 lat = 6;
-    int64 lon = 7;
-    string comment = 8;
-    
 }
 
 message User {

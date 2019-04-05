@@ -1,21 +1,8 @@
 syntax = "proto3";
-option java_package = "tech.lmru.cdsrfp.service";
+option java_package = "tech.lmru.cdsrfp.storeservice";
 option java_multiple_files = true;
 
-message Empty{
-}
-
-
-message Store {
-    int32 id = 1;
-    string type = 2;
-    string name = 3;
-    string address = 4;
-    string code = 5;
-    double lon = 6;
-    double lat = 7;
-    string comment = 8;
-}
+import "common.proto";
 
 message StoreCreateResponse {
     int32 id = 1;
