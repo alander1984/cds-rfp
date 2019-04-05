@@ -2,9 +2,10 @@ syntax = "proto3";
 option java_package = "tech.lmru.cdsrfp.service";
 option java_multiple_files = true;
 
-package deliveryservice;
+//package deliveryservice;
 
 import "common.proto";
+import "stores.proto";
 
 enum DeliveryStatusEnum {
     NEW = 0;
@@ -52,21 +53,7 @@ message DeliveryItem {
     DeliveryStatusEnum status = 11;
 }
 
-message Store {
-    int64 id = 1;
-    enum StoreTypeEnum {
-        OFFLINE = 0;
-        ONLINE = 1;
-    }
-    StoreTypeEnum type = 2;
-    string name = 3;
-    string address = 4;
-    string code = 5;
-    int64 lat = 6;
-    int64 lon = 7;
-    string comment = 8;
-    
-}
+
 
 message User {
     int32 id = 1;
