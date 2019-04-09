@@ -1,11 +1,13 @@
 package tech.lmru.cdsrfp.service;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tech.lmru.cdsrfp.service.Delivery.Builder;
 import tech.lmru.grpc.GRPCService;
 import tech.lmru.repo.DeliveryRepository;
@@ -18,16 +20,23 @@ public class DeliveryGRPCService extends
    private DeliveryRepository deliveryRepository;
    
    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-mm-dd HH:MM:ss.SSS");
+   
+   private final Logger logger = LoggerFactory.getLogger(DeliveryGRPCService.class);
         
         @Override
         public void readAllDelivery(tech.lmru.cdsrfp.service.Empty request,
         io.grpc.stub.StreamObserver<tech.lmru.cdsrfp.service.DeliveryAllResponse> responseObserver) {
-            List<tech.lmru.entity.order.Delivery> newDel = deliveryRepository.newDeliveries();
+            List<tech.lmru.entity.order.Delivery> newDel = deliveryRepository.findAll();
+            logger.info("List size of all deliveries {}", newDel.size());
             DeliveryAllResponse response = null;
             if (newDel.isEmpty()) {
                 response = DeliveryAllResponse.newBuilder().build();
             } else {
                 List<Delivery> deliveries = newDel.stream().map(delivery ->{
+                    //logger.info("List size of all deliveries.items {}", delivery.getItems().size());
+                    
+                    //tech.lmru.entity.order.Delivery delivery = deliveryRepository.findOneWithItemsById(1L);
+                    //logger.info("List size of all deliveries.items {}", delivery.getItems().size());
                     User u = User.newBuilder()
                     .setId(delivery.getCreateUser().getId())
                     .setName(delivery.getCreateUser().getName()).build();
@@ -44,6 +53,7 @@ public class DeliveryGRPCService extends
                     .setLat(delivery.getStore().getLat().doubleValue())
                     .setComment(delivery.getStore().getComment()).build();
                     //DeliveryStatusEnum st;
+                    logger.info("Users, Store builded");
                     Builder build = Delivery.newBuilder()
                         .setId(delivery.getId())
                         .setLat(delivery.getLat().doubleValue())
@@ -64,6 +74,7 @@ public class DeliveryGRPCService extends
                         .setFlat(delivery.getEntrance())
                         .setStore(s)
                         .addAllItems(delivery.getItems().stream().map(item ->{
+                            logger.info("Items building");
                                 return tech.lmru.cdsrfp.service.DeliveryItem.newBuilder()
                                     .setId(item.getId())
                                     .setProductLMCode(item.getProductLMCode())
@@ -77,9 +88,12 @@ public class DeliveryGRPCService extends
                                     .setApprovedQuantity(item.getApprovedQuantity().doubleValue())
                                     //.setStatus(st)
                                     .build();
-                        }).collect(Collectors.toList()));  
+                        }).collect(Collectors.toList()));
+                        logger.info("All Items Added");
                         return build.build();
                 }).collect(Collectors.toList());
+               //List<Delivery> deliveries = new ArrayList<>();
+               //deliveries.add(build.build());
                 response = DeliveryAllResponse.newBuilder()
                     .addAllDeliveries(deliveries).build();
             }

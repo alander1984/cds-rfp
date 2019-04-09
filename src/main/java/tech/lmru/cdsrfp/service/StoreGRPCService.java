@@ -25,7 +25,6 @@ public class StoreGRPCService extends tech.lmru.cdsrfp.storeservice.StoreService
         this.repository = repository;
     }
     
-    
     @Transactional
     @Override
     public void createOrUpdateStore(tech.lmru.cdsrfp.service.Store request,
@@ -120,6 +119,4 @@ public class StoreGRPCService extends tech.lmru.cdsrfp.storeservice.StoreService
               responseObserver.onCompleted();
             }
     }
-    
-    
 }
