@@ -35,8 +35,7 @@ message Delivery {
     string house = 15;
     string entrance = 16;
     string flat = 17;
-    repeated DeliveryItem items = 18;
-    Store store = 19;
+    Store store = 18;
 }
 
 message DeliveryItem {
@@ -44,7 +43,7 @@ message DeliveryItem {
     string productLMCode = 2;
     string productLMName = 3;
     double weight = 4;
-    double volume = 5;
+    double height = 5;
     double width = 6;
     double length = 7;
     double quantity = 8;
@@ -63,8 +62,17 @@ message DeliveryAllResponse {
     repeated Delivery deliveries = 1;
 }
 
+message DeliveryItemAllResponse {
+    repeated DeliveryItem items = 1;
+}
+
+message DeliveryIdRequest {
+    int64 id = 1;
+}
+
 service DeliveryService {
     rpc readAllDelivery(Empty) returns (DeliveryAllResponse);
+    rpc readAllDeliveryItemForDeliveryById(DeliveryIdRequest) returns (DeliveryItemAllResponse);
 }
 
 
