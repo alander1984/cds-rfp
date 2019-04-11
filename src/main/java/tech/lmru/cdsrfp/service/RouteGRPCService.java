@@ -150,7 +150,11 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
         Builder builder = Route.newBuilder()
             .setId(route.getId())
             .setName(route.getName())
-            .setDeliveryDate(route.getDeliveryDate().format(formatter));
+            .setDeliveryDate(route.getDeliveryDate().format(formatter))
+            .setStore(Store.newBuilder()
+                .setId(route.getStore().getId())
+                .setName(route.getStore().getName())
+                .build());
         if (route.getTransportCompany() != null) {
           builder.setTransportCompany(
               TransportCompany.newBuilder()
@@ -162,11 +166,19 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
         }
         if (route.getVehicle() != null) {
           builder.setVehicle(tech.lmru.cdsrfp.service.Vehicle.newBuilder()
-              .setId(route.getVehicle().getId())
-              .setCapacity(route.getVehicle().getCapacity())
-              .setRegistrationNumber(route.getVehicle().getRegistrationNumber())
-              .setModel(route.getVehicle().getModel())
-              .setTonnage(route.getVehicle().getTonnage()).build()
+                  .setId(route.getVehicle().getId())
+                  .setCapacity(route.getVehicle().getCapacity())
+                  .setRegistrationNumber(route.getVehicle().getRegistrationNumber())
+                  .setModel(route.getVehicle().getModel())
+                  .setTonnage(route.getVehicle().getTonnage())
+              .addAllDrivers(route.getVehicle().getDrivers().stream().map(driver ->
+                  Driver.newBuilder()
+                      .setId(driver.getId())
+                      .setName(driver.getName())
+                      .setSurname(driver.getSurname())
+                      .setPatronymic(driver.getPatronymic())
+                      .build()).collect(Collectors.toList()))
+                  .build()
           );
         }
         return builder.build();
