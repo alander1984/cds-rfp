@@ -67,11 +67,19 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
       route.setOptimizationTask(entityOptTask);
     }
 
-    if (request.hasStore()){
+    if (request.hasStore()) {
       Store requestStore = request.getStore();
       tech.lmru.entity.store.Store store = new tech.lmru.entity.store.Store();
       store.setId(requestStore.getId());
       route.setStore(store);
+    }
+
+    //add Driver
+
+    if (request.hasDriver()) {
+      tech.lmru.entity.transport.Driver driver = new tech.lmru.entity.transport.Driver();
+      driver.setId(request.getDriver().getId());
+      route.setDriver(driver);
     }
 
     EntityCreateResponse response = null;
@@ -166,11 +174,11 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
         }
         if (route.getVehicle() != null) {
           builder.setVehicle(tech.lmru.cdsrfp.service.Vehicle.newBuilder()
-                  .setId(route.getVehicle().getId())
-                  .setCapacity(route.getVehicle().getCapacity())
-                  .setRegistrationNumber(route.getVehicle().getRegistrationNumber())
-                  .setModel(route.getVehicle().getModel())
-                  .setTonnage(route.getVehicle().getTonnage())
+              .setId(route.getVehicle().getId())
+              .setCapacity(route.getVehicle().getCapacity())
+              .setRegistrationNumber(route.getVehicle().getRegistrationNumber())
+              .setModel(route.getVehicle().getModel())
+              .setTonnage(route.getVehicle().getTonnage())
               .addAllDrivers(route.getVehicle().getDrivers().stream().map(driver ->
                   Driver.newBuilder()
                       .setId(driver.getId())
@@ -178,7 +186,16 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
                       .setSurname(driver.getSurname())
                       .setPatronymic(driver.getPatronymic())
                       .build()).collect(Collectors.toList()))
-                  .build()
+              .build()
+          );
+        }
+
+        if (route.getDriver() != null) {
+          builder.setDriver(Driver.newBuilder()
+              .setId(route.getDriver().getId())
+              .setName(route.getDriver().getName())
+              .setSurname(route.getDriver().getSurname())
+              .setPatronymic(route.getDriver().getPatronymic())
           );
         }
         return builder.build();

@@ -19,6 +19,7 @@ message Route {
   Vehicle vehicle = 6;
   TransportCompany transportCompany = 7;
   Store store = 8;
+  Driver driver = 9;
 }
 
 
