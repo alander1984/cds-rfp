@@ -50,29 +50,29 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
       tech.lmru.cdsrfp.service.Vehicle requestVehicle = request.getVehicle();
       Vehicle vehicleEntity = new Vehicle();
       vehicleEntity.setId(requestVehicle.getId());
-      vehicleEntity.setModel(requestVehicle.getModel());
-      vehicleEntity.setTonnage(requestVehicle.getTonnage());
-      vehicleEntity.setCapacity(requestVehicle.getCapacity());
-      vehicleEntity.setRegistrationNumber(requestVehicle.getRegistrationNumber());
-
       route.setVehicle(vehicleEntity);
 
     }
     //add TransportCompany
     if (request.hasTransportCompany()) {
-
       TransportCompany requestTC = request.getTransportCompany();
       tech.lmru.entity.transport.TransportCompany companyEntity = new tech.lmru.entity.transport.TransportCompany();
       companyEntity.setId(requestTC.getId());
-      companyEntity.setCode(requestTC.getCode());
-      companyEntity.setName(requestTC.getName());
       route.setTransportCompany(companyEntity);
-
     }
+
     //add Optimization task
     if (request.hasOptimizationTask()) {
       tech.lmru.cdsrfp.service.OptimizationTask requestOptTask = request.getOptimizationTask();
       OptimizationTask entityOptTask = new OptimizationTask();
+      route.setOptimizationTask(entityOptTask);
+    }
+
+    if (request.hasStore()){
+      Store requestStore = request.getStore();
+      tech.lmru.entity.store.Store store = new tech.lmru.entity.store.Store();
+      store.setId(requestStore.getId());
+      route.setStore(store);
     }
 
     EntityCreateResponse response = null;
@@ -152,7 +152,11 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
         Builder builder = Route.newBuilder()
             .setId(route.getId())
             .setName(route.getName())
-            .setDeliveryDate(route.getDeliveryDate().format(formatter));
+            .setDeliveryDate(route.getDeliveryDate().format(formatter))
+            .setStore(Store.newBuilder()
+                .setId(route.getStore().getId())
+                .setName(route.getStore().getName())
+                .build());
         if (route.getTransportCompany() != null) {
           builder.setTransportCompany(
               TransportCompany.newBuilder()
@@ -164,11 +168,19 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
         }
         if (route.getVehicle() != null) {
           builder.setVehicle(tech.lmru.cdsrfp.service.Vehicle.newBuilder()
-              .setId(route.getVehicle().getId())
-              .setCapacity(route.getVehicle().getCapacity())
-              .setRegistrationNumber(route.getVehicle().getRegistrationNumber())
-              .setModel(route.getVehicle().getModel())
-              .setTonnage(route.getVehicle().getTonnage()).build()
+                  .setId(route.getVehicle().getId())
+                  .setCapacity(route.getVehicle().getCapacity())
+                  .setRegistrationNumber(route.getVehicle().getRegistrationNumber())
+                  .setModel(route.getVehicle().getModel())
+                  .setTonnage(route.getVehicle().getTonnage())
+              .addAllDrivers(route.getVehicle().getDrivers().stream().map(driver ->
+                  Driver.newBuilder()
+                      .setId(driver.getId())
+                      .setName(driver.getName())
+                      .setSurname(driver.getSurname())
+                      .setPatronymic(driver.getPatronymic())
+                      .build()).collect(Collectors.toList()))
+                  .build()
           );
         }
         if(!route.getRouterPoints().isEmpty()) {
