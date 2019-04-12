@@ -3,6 +3,7 @@ package tech.lmru.cdsrfp.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -155,6 +156,7 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
 
     if (!all.isEmpty()) {
       List<Route> collect = all.stream().map(route -> {
+          logger.info("####ROUTE WITH ID {}", route.getId());
         Builder builder = Route.newBuilder()
             .setId(route.getId())
             .setName(route.getName())
@@ -197,6 +199,43 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
               .setSurname(route.getDriver().getSurname())
               .setPatronymic(route.getDriver().getPatronymic())
           );
+        }
+        if(!route.getRouterPoints().isEmpty()) {
+            logger.info("#######SET ROUTER POINTS");
+            tech.lmru.cdsrfp.service.RoutePoint.Builder routePointsBuilder = tech.lmru.cdsrfp.service.RoutePoint.newBuilder();
+            List<tech.lmru.cdsrfp.service.RoutePoint> serviceRoutePoints = new ArrayList<tech.lmru.cdsrfp.service.RoutePoint>();
+            for(tech.lmru.entity.route.RoutePoint entityRoutePoint : route.getRouterPoints()) {
+                tech.lmru.cdsrfp.service.RoutePoint.Builder routePointBuilder = tech.lmru.cdsrfp.service.RoutePoint.newBuilder();
+                tech.lmru.cdsrfp.service.Delivery serviceDelivery = null;
+                if(entityRoutePoint.getDelivery() != null) {
+                    logger.info("#####SET DELIVERY");
+                    
+                    tech.lmru.entity.order.Delivery entityDelivery = entityRoutePoint.getDelivery();
+                    logger.info("#####DELIVERY LON: {}", entityDelivery.getLon());
+                    logger.info("#####DELIVERY LAT: {}", entityDelivery.getLat());
+                    serviceDelivery = tech.lmru.cdsrfp.service.Delivery.newBuilder()
+                                                                            .setId(entityDelivery.getId())
+                                                                            .setCity(entityDelivery.getCity())
+                                                                            .setStreet(entityDelivery.getStreet())
+                                                                            .setHouse(entityDelivery.getHouse())
+                                                                            .setEntrance(entityDelivery.getEntrance())
+                                                                            .setHouse(entityDelivery.getHouse())
+                                                                            .setLon(entityDelivery.getLon().doubleValue())
+                                                                            .setLat(entityDelivery.getLat().doubleValue())
+                                                                        .build();                                                      
+                }       
+                tech.lmru.cdsrfp.service.RoutePoint serviceRoutePoint = routePointBuilder
+                                                                            .setId(entityRoutePoint.getId())
+                                                                            .setPos(entityRoutePoint.getPos())
+                                                                            .setArrivalTime(entityRoutePoint.getArrivalTime().doubleValue())
+                                                                            .setDelivery(serviceDelivery)
+                                                                        .build();
+                logger.info("LON FROM ROUTE POINT: {}", serviceRoutePoint.getDelivery().getLon());
+ 
+                serviceRoutePoints.add(serviceRoutePoint);
+            }
+            builder.addAllRouterPoints(serviceRoutePoints);
+
         }
         return builder.build();
       })
