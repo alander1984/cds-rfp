@@ -49,29 +49,29 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
       tech.lmru.cdsrfp.service.Vehicle requestVehicle = request.getVehicle();
       Vehicle vehicleEntity = new Vehicle();
       vehicleEntity.setId(requestVehicle.getId());
-      vehicleEntity.setModel(requestVehicle.getModel());
-      vehicleEntity.setTonnage(requestVehicle.getTonnage());
-      vehicleEntity.setCapacity(requestVehicle.getCapacity());
-      vehicleEntity.setRegistrationNumber(requestVehicle.getRegistrationNumber());
-
       route.setVehicle(vehicleEntity);
 
     }
     //add TransportCompany
     if (request.hasTransportCompany()) {
-
       TransportCompany requestTC = request.getTransportCompany();
       tech.lmru.entity.transport.TransportCompany companyEntity = new tech.lmru.entity.transport.TransportCompany();
       companyEntity.setId(requestTC.getId());
-      companyEntity.setCode(requestTC.getCode());
-      companyEntity.setName(requestTC.getName());
       route.setTransportCompany(companyEntity);
-
     }
+
     //add Optimization task
     if (request.hasOptimizationTask()) {
       tech.lmru.cdsrfp.service.OptimizationTask requestOptTask = request.getOptimizationTask();
       OptimizationTask entityOptTask = new OptimizationTask();
+      route.setOptimizationTask(entityOptTask);
+    }
+
+    if (request.hasStore()){
+      Store requestStore = request.getStore();
+      tech.lmru.entity.store.Store store = new tech.lmru.entity.store.Store();
+      store.setId(requestStore.getId());
+      route.setStore(store);
     }
 
     EntityCreateResponse response = null;
