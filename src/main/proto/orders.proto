@@ -1,0 +1,53 @@
+syntax = "proto3";
+option java_package = "tech.lmru.orders.grpc.service.generated.impl";
+option java_multiple_files = true;
+
+package orderservice;
+
+
+message Order {
+  int32 id = 1;
+  string orderNumber = 2;
+  string deliveryPrognosis = 3;
+  string deliveryWindowStart = 4;
+  string deliveryWindowEnd = 5;
+  string customerName = 6;
+  string customerPhone = 7;
+  string customerAddress = 8;
+  string customerComment = 9;
+  float weight = 10;
+  repeated string service = 11;
+  string status = 12;
+  float lat = 13;
+  float lon = 14;
+  int32 orderIndex = 15;
+}
+
+message OrderPosition {
+      int32 id = 1;
+      string name = 2;
+      string vendorCode = 3;
+      int32 quantity = 4;
+}
+
+
+message OrderList {
+    repeated Order orders = 1;
+}
+
+
+message PositionList {
+    repeated OrderPosition positions = 1;
+}
+
+message PositionRequest {
+    int32 orderId = 1;
+}
+
+message Empty {
+}
+
+service OrderService {
+   rpc GetOrderList(Empty) returns (OrderList) {}
+   rpc GetPositionList(PositionRequest) returns (PositionList) {}
+}
