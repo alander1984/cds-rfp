@@ -164,6 +164,8 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
             .setStore(Store.newBuilder()
                 .setId(route.getStore().getId())
                 .setName(route.getStore().getName())
+                .setLon(route.getStore().getLon().doubleValue())
+                .setLat(route.getStore().getLat().doubleValue())
                 .build());
         if (route.getTransportCompany() != null) {
           builder.setTransportCompany(
@@ -205,11 +207,11 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
             tech.lmru.cdsrfp.service.RoutePoint.Builder routePointsBuilder = tech.lmru.cdsrfp.service.RoutePoint.newBuilder();
             List<tech.lmru.cdsrfp.service.RoutePoint> serviceRoutePoints = new ArrayList<tech.lmru.cdsrfp.service.RoutePoint>();
             for(tech.lmru.entity.route.RoutePoint entityRoutePoint : route.getRouterPoints()) {
+                logger.info("####ROUTE POINT ID: {}", entityRoutePoint.getId());
                 tech.lmru.cdsrfp.service.RoutePoint.Builder routePointBuilder = tech.lmru.cdsrfp.service.RoutePoint.newBuilder();
                 tech.lmru.cdsrfp.service.Delivery serviceDelivery = null;
                 if(entityRoutePoint.getDelivery() != null) {
                     logger.info("#####SET DELIVERY");
-                    
                     tech.lmru.entity.order.Delivery entityDelivery = entityRoutePoint.getDelivery();
                     logger.info("#####DELIVERY LON: {}", entityDelivery.getLon());
                     logger.info("#####DELIVERY LAT: {}", entityDelivery.getLat());
