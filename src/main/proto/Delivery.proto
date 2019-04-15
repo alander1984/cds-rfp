@@ -1,0 +1,79 @@
+syntax = "proto3";
+option java_package = "tech.lmru.cdsrfp.service";
+option java_multiple_files = true;
+
+//package deliveryservice;
+
+import "common.proto";
+import "stores.proto";
+
+enum DeliveryStatusEnum {
+    NEW = 0;
+    APPROVED = 1;
+    ONDELIVERY = 2;
+    DELIVERED = 3;
+    PARTIALLYDELIVERED = 4;
+    RETURNONDELIVERY = 5;
+    CANCELLED = 6;
+}
+
+message Delivery {
+    int64 id = 1;
+    double lat = 2;
+    double lon = 3;
+    string timeWindow = 4;
+    User createUser = 5;
+    string createdDate = 6;
+    User lastUpdateUser = 7;
+    string lastUpdateDate = 8;
+    DeliveryStatusEnum status = 9;
+    string deliveryDateMin = 10;
+    string deliveryDateMax = 11;
+    string comment = 12;
+    string city = 13;
+    string street = 14;
+    string house = 15;
+    string entrance = 16;
+    string flat = 17;
+    Store store = 18;
+}
+
+message DeliveryItem {
+    int64 id = 1;
+    string productLMCode = 2;
+    string productLMName = 3;
+    double weight = 4;
+    double height = 5;
+    double width = 6;
+    double length = 7;
+    double quantity = 8;
+    double loadedQuantity = 9;
+    double approvedQuantity = 10;
+    DeliveryStatusEnum status = 11;
+}
+
+message User {
+    int32 id = 1;
+    string name = 3;
+}
+
+
+message DeliveryAllResponse {
+    repeated Delivery deliveries = 1;
+}
+
+message DeliveryItemAllResponse {
+    repeated DeliveryItem items = 1;
+}
+
+message DeliveryIdRequest {
+    int64 id = 1;
+}
+
+service DeliveryService {
+    rpc readAllDelivery(Empty) returns (DeliveryAllResponse);
+    rpc readAllDeliveryItemForDeliveryById(DeliveryIdRequest) returns (DeliveryItemAllResponse);
+}
+
+
+

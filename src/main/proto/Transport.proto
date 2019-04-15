@@ -1,0 +1,81 @@
+syntax = "proto3";
+option java_package = "tech.lmru.cdsrfp.service";
+option java_multiple_files = true;
+
+//package transportservice;
+
+import "common.proto";
+
+
+message Driver {
+    int64 id = 1;
+    string surname = 2;
+    string name = 3;
+    string patronymic = 4;
+    string birthday = 5;
+    string login = 6;
+    string password = 7;
+    repeated Vehicle vehicles = 8;
+}
+
+message Vehicle {
+    int64 id = 1;
+    string registrationNumber = 2;
+    string model = 3;
+    string tonnage = 4;
+    string capacity = 5;
+    repeated Driver drivers = 6;
+    TransportCompany transportCompany = 7;
+}
+
+message TransportCompany {
+    int64 id = 1;
+    string code = 2;
+    string name = 3;
+    repeated Vehicle vehicles = 4;
+}
+
+message EntityIdRequest {
+    int64 id = 1;
+}
+
+message EntityCreateResponse {
+    int64 id = 1;
+}
+
+message EntityDeleteResponse {
+    bool success = 1;
+}
+
+message DriverAllResponse {
+    repeated Driver drivers = 1;
+}
+
+message VehicleAllResponse {
+    repeated Vehicle vehicles = 1;
+}
+
+message TransportCompanyAllResponse {
+    repeated TransportCompany transportCompanies = 1;
+}
+
+service DriverService {
+    rpc createOrUpdateDriver(Driver) returns (EntityCreateResponse);
+    rpc readByIdDriver(EntityIdRequest) returns (Driver);
+    rpc readAllDrivers(Empty) returns (DriverAllResponse);
+    rpc deleteByIdDriver(EntityIdRequest) returns (EntityDeleteResponse);
+}
+
+service VehicleService {
+    rpc createOrUpdateVehicle(Vehicle) returns (EntityCreateResponse);
+    rpc readByIdVehicle(EntityIdRequest) returns (Vehicle);
+    rpc readAllVehicles(Empty) returns (VehicleAllResponse);
+    rpc deleteByIdVehicle(EntityIdRequest) returns (EntityDeleteResponse);
+}
+
+service TransportCompanyService {
+    rpc createOrUpdateTransportCompany(TransportCompany) returns (EntityCreateResponse);
+    rpc readByIdTransportCompany(EntityIdRequest) returns (TransportCompany);
+    rpc readAllTransportCompanies(Empty) returns (TransportCompanyAllResponse);
+    rpc deleteByIdTransportCompany(EntityIdRequest) returns (EntityDeleteResponse);
+}

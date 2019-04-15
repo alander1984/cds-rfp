@@ -1,0 +1,48 @@
+syntax = "proto3";
+option java_package = "tech.lmru.cdsrfp.service";
+option java_multiple_files = true;
+
+//package storeservice;
+
+import "common.proto";
+
+message Store {
+    int64 id = 1;
+    enum StoreTypeEnum {
+        OFFLINE = 0;
+        ONLINE = 1;
+    }
+    StoreTypeEnum type = 2;
+    string name = 3;
+    string address = 4;
+    string code = 5;
+    double lat = 6;
+    double lon = 7;
+    string comment = 8; 
+}
+
+message StoreCreateResponse {
+    int32 id = 1;
+}
+
+message StoreIdRequest {
+    string id = 1;
+}
+
+message StoreGetAllResponse {
+    repeated Store stores = 1;
+}
+
+message StoreDeleteResponse {
+    bool success = 1;
+}
+
+service StoreService{
+    rpc createOrUpdateStore(Store) returns (StoreCreateResponse) {}
+    
+    rpc getStoreById(StoreIdRequest) returns (Store) {}
+    
+    rpc getAllStore(Empty) returns (StoreGetAllResponse) {}
+    
+    rpc deleteStoreById(StoreIdRequest) returns (StoreDeleteResponse) {}  
+}

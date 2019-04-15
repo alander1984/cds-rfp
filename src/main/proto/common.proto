@@ -1,0 +1,7 @@
+syntax = "proto3";
+option java_package = "tech.lmru.cdsrfp.service";
+option java_multiple_files = true;
+
+message Empty {
+}
+
