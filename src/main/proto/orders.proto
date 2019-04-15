@@ -20,6 +20,7 @@ message Order {
   string status = 12;
   float lat = 13;
   float lon = 14;
+  int32 orderIndex = 15;
 }
 
 message OrderPosition {

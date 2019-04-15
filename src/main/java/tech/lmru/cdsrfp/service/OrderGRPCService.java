@@ -32,6 +32,7 @@ public class OrderGRPCService extends OrderServiceImplBase {
             .setStatus("active")
             .setLat(53.180177f)
             .setLon(50.097157f)
+            .setOrderIndex(1)
             .build();
             
         Order order2 = Order.newBuilder()
@@ -49,6 +50,7 @@ public class OrderGRPCService extends OrderServiceImplBase {
             .setStatus("active")
             .setLat(53.183141f)
             .setLon(50.098898f)
+            .setOrderIndex(2)
             .build();
             
         OrderList response = OrderList.newBuilder()
