@@ -1,5 +1,6 @@
 package tech.lmru.cdsrfp.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -82,6 +83,25 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
       driver.setId(request.getDriver().getId());
       route.setDriver(driver);
     }
+
+    //add RoutePoints
+    //Only create new RoutePoint with existing Route
+    if (!request.getRouterPointsList().isEmpty()){
+      List<tech.lmru.entity.route.RoutePoint> collect = request.getRouterPointsList().stream()
+          .map(routePoint -> {
+            tech.lmru.entity.route.RoutePoint point = new tech.lmru.entity.route.RoutePoint();
+            point.setPos(routePoint.getPos());
+            point.setArrivalTime(BigDecimal.valueOf(routePoint.getArrivalTime()));
+
+            tech.lmru.entity.order.Delivery delivery = new tech.lmru.entity.order.Delivery();
+            delivery.setId(routePoint.getDelivery().getId());
+            point.setDelivery(delivery);
+            return point;
+          }).collect(Collectors.toList());
+      route.setRouterPoints(collect);
+
+    }
+
 
     EntityCreateResponse response = null;
     try {
