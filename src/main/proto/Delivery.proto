@@ -36,6 +36,19 @@ message Delivery {
     string entrance = 16;
     string flat = 17;
     Store store = 18;
+    string fullName = 19;
+    string external = 20;
+    string zone = 21;
+    string metroStation = 22;
+    string floor = 23;
+    string company = 24;
+    string phone = 25;
+    string phoneSecondary = 26;
+    string email = 27;
+    string unloadType = 28;
+    string paymentStatus = 29;
+    string paper = 30;
+    string consignee = 31;
 }
 
 message DeliveryItem {

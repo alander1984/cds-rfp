@@ -72,6 +72,19 @@ public class DeliveryGRPCService extends
                             .setHouse(delivery.getHouse())
                             .setEntrance(delivery.getEntrance())
                             .setFlat(delivery.getEntrance())
+                            .setFullName(delivery.getFullName())
+                            .setExternal(delivery.getExternal())
+                            .setZone(delivery.getZone())
+                            .setMetroStation(delivery.getMetroStation())
+                            .setFloor(delivery.getFloor())
+                            .setCompany(delivery.getCompany())
+                            .setPhone(delivery.getPhone())
+                            .setPhoneSecondary(delivery.getPhoneSecondary())
+                            .setEmail(delivery.getEmail())
+                            .setUnloadType(delivery.getUnloadType())
+                            .setPaper(delivery.getPaper())
+                            .setPaymentStatus(delivery.getPaymentStatus())
+                            .setConsignee(delivery.getConsignee())
                             .setStore(s);
                             
                             return build.build();
