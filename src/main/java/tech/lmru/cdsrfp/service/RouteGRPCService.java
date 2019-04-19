@@ -1,5 +1,6 @@
 package tech.lmru.cdsrfp.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -83,6 +84,25 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
       route.setDriver(driver);
     }
 
+    //add RoutePoints
+    //Only create new RoutePoint with existing Route
+    if (!request.getRouterPointsList().isEmpty()){
+      List<tech.lmru.entity.route.RoutePoint> collect = request.getRouterPointsList().stream()
+          .map(routePoint -> {
+            tech.lmru.entity.route.RoutePoint point = new tech.lmru.entity.route.RoutePoint();
+            point.setPos(routePoint.getPos());
+            point.setArrivalTime(BigDecimal.valueOf(routePoint.getArrivalTime()));
+
+            tech.lmru.entity.order.Delivery delivery = new tech.lmru.entity.order.Delivery();
+            delivery.setId(routePoint.getDelivery().getId());
+            point.setDelivery(delivery);
+            return point;
+          }).collect(Collectors.toList());
+      route.setRouterPoints(collect);
+
+    }
+
+
     EntityCreateResponse response = null;
     try {
       tech.lmru.entity.route.Route save = repository.save(route);
@@ -164,6 +184,8 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
             .setStore(Store.newBuilder()
                 .setId(route.getStore().getId())
                 .setName(route.getStore().getName())
+                .setLon(route.getStore().getLon().doubleValue())
+                .setLat(route.getStore().getLat().doubleValue())
                 .build());
         if (route.getTransportCompany() != null) {
           builder.setTransportCompany(
@@ -205,11 +227,11 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
             tech.lmru.cdsrfp.service.RoutePoint.Builder routePointsBuilder = tech.lmru.cdsrfp.service.RoutePoint.newBuilder();
             List<tech.lmru.cdsrfp.service.RoutePoint> serviceRoutePoints = new ArrayList<tech.lmru.cdsrfp.service.RoutePoint>();
             for(tech.lmru.entity.route.RoutePoint entityRoutePoint : route.getRouterPoints()) {
+                logger.info("####ROUTE POINT ID: {}", entityRoutePoint.getId());
                 tech.lmru.cdsrfp.service.RoutePoint.Builder routePointBuilder = tech.lmru.cdsrfp.service.RoutePoint.newBuilder();
                 tech.lmru.cdsrfp.service.Delivery serviceDelivery = null;
                 if(entityRoutePoint.getDelivery() != null) {
                     logger.info("#####SET DELIVERY");
-                    
                     tech.lmru.entity.order.Delivery entityDelivery = entityRoutePoint.getDelivery();
                     logger.info("#####DELIVERY LON: {}", entityDelivery.getLon());
                     logger.info("#####DELIVERY LAT: {}", entityDelivery.getLat());

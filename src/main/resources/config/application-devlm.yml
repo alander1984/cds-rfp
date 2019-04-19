@@ -1,0 +1,12 @@
+cds-rfp:
+    enable-grpc-security: false
+    security:
+        host: ${AUTH_ADDR}
+        port: ${AUTH_PORT}
+    grpc:
+        port: 8030
+spring:
+    datasource:
+        url: ${PG_URL}
+        username: ${PG_USERNAME}
+        password: ${PG_PASSWORD}
