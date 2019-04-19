@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import io.grpc.stub.StreamObserver;
+import org.springframework.transaction.annotation.Transactional;
 import tech.lmru.cdsrfp.service.Route.Builder;
 import tech.lmru.entity.plan.OptimizationTask;
 import tech.lmru.entity.transport.Vehicle;
@@ -36,10 +37,23 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
     this.repository = repository;
   }
 
+  @Transactional
   @Override
   public void createOrUpdateRoute(Route request,
       StreamObserver<EntityCreateResponse> responseObserver) {
     tech.lmru.entity.route.Route route = new tech.lmru.entity.route.Route();
+
+    tech.lmru.entity.route.Route routeExist = null;
+    List<tech.lmru.entity.route.RoutePoint> routerPoints = null;
+
+    if (request.getId() != 0){
+      Optional<tech.lmru.entity.route.Route> byId = repository.findById(request.getId());
+      if (byId.isPresent()){
+        routeExist = byId.get();
+        routerPoints = routeExist.getRouterPoints();
+      }
+    }
+
     route.setId(request.getId());
     route.setName(request.getName());
     LocalDate ld = LocalDate.parse(request.getDeliveryDate(), formatter);
@@ -98,6 +112,11 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
             point.setDelivery(delivery);
             return point;
           }).collect(Collectors.toList());
+
+      if (routerPoints != null && !routerPoints.isEmpty()) {
+        collect.addAll(routerPoints);
+      }
+
       route.setRouterPoints(collect);
 
     }
