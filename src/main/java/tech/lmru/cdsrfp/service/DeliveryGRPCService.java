@@ -1,16 +1,15 @@
 package tech.lmru.cdsrfp.service;
 
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
 import javax.persistence.EntityNotFoundException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import tech.lmru.cdsrfp.service.Delivery.Builder;
 import tech.lmru.grpc.GRPCService;
 import tech.lmru.repo.DeliveryRepository;
@@ -19,14 +18,16 @@ import tech.lmru.repo.DeliveryRepository;
 public class DeliveryGRPCService extends
     tech.lmru.cdsrfp.service.DeliveryServiceGrpc.DeliveryServiceImplBase {
    
-   @Inject
-   private DeliveryRepository deliveryRepository;
-   
-   private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-mm-dd HH:MM:ss.SSS");
+   private final DeliveryRepository deliveryRepository;
    
    private final Logger logger = LoggerFactory.getLogger(DeliveryGRPCService.class);
-        
-        @Override
+
+  @Autowired
+  public DeliveryGRPCService(DeliveryRepository deliveryRepository) {
+    this.deliveryRepository = deliveryRepository;
+  }
+
+  @Override
         public void readAllDelivery(tech.lmru.cdsrfp.service.Empty request,
         io.grpc.stub.StreamObserver<tech.lmru.cdsrfp.service.DeliveryAllResponse> responseObserver) {
             List<tech.lmru.entity.order.Delivery> newDel = deliveryRepository.findAll().stream().filter(d -> (d.getStatus() == tech.lmru.entity.order.DeliveryStatusEnum.NEW)).collect(Collectors.toList());
@@ -134,4 +135,25 @@ public class DeliveryGRPCService extends
             
         }
 
+  @Transactional
+  @Override
+  public void changeStatusDelivery(DeliveryStatusChangeRequest request,
+      io.grpc.stub.StreamObserver<DeliveryChangeStatusResponse> responseObserver) {
+    List<Long> listIdList = request.getListIdList();
+    DeliveryStatusEnum newStatus = request.getNewStatus();
+    DeliveryChangeStatusResponse response = null;
+
+    try {
+      listIdList.forEach(aLong -> {
+        deliveryRepository.updateDeliveryStatusById(aLong, tech.lmru.entity.order.DeliveryStatusEnum.valueOf(newStatus.toString()));
+      });
+      response = DeliveryChangeStatusResponse.newBuilder().setSuccess(true).build();
+    } catch ( Exception ex) {
+      ex.printStackTrace();
+      response = DeliveryChangeStatusResponse.newBuilder().setSuccess(false).build();
+    } finally {
+      responseObserver.onNext(response);
+      responseObserver.onCompleted();
+    }
+  }
 }

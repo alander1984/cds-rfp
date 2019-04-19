@@ -83,9 +83,19 @@ message DeliveryIdRequest {
     int64 id = 1;
 }
 
+message DeliveryChangeStatusResponse {
+    bool success = 1;
+}
+
+message DeliveryStatusChangeRequest {
+    repeated int64 listId = 1;
+    DeliveryStatusEnum newStatus = 2;
+}
+
 service DeliveryService {
     rpc readAllDelivery(Empty) returns (DeliveryAllResponse);
     rpc readAllDeliveryItemForDeliveryById(DeliveryIdRequest) returns (DeliveryItemAllResponse);
+    rpc changeStatusDelivery(DeliveryStatusChangeRequest) returns (DeliveryChangeStatusResponse);
 }
 
 
