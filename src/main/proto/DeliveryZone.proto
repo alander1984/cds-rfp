@@ -1,0 +1,25 @@
+syntax = "proto3";
+option java_package = "tech.lmru.cdsrfp.service";
+option java_multiple_files = true;
+import "common.proto";
+
+//package deliveryservice;
+
+message CoordinateItem {
+    double lat = 1;
+    double lon = 2;
+    int32 pos = 3;
+}
+
+message DeliveryZone {
+    int64 id = 1;
+    repeated CoordinateItem coordinate = 2;
+}
+
+service DeliveryZoneService {
+    rpc createDeliveryZone(DeliveryZone) returns (Empty);
+    rpc updateDeliveryZone(DeliveryZone) returns (Empty);
+}
+
+
+
