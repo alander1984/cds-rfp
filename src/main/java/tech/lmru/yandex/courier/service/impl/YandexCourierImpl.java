@@ -10,8 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import tech.lmru.cdsrfp.config.ApplicationProperties;
+import tech.lmru.yandex.courier.dto.CourierDto;
 import tech.lmru.yandex.courier.dto.DepotDto;
-import tech.lmru.yandex.courier.dto.ResponseBatchDepotDto;
+import tech.lmru.yandex.courier.dto.BatchResponseDto;
 import tech.lmru.yandex.service.YandexTokenProvider;
 
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.function.Supplier;
 public class YandexCourierImpl {
 
     private static final String URL_DEPOTS_BATH = "/depots-batch";
+    private static final String URL_COURIERS_BATH = "/couriers-batch";
     private static final int TRY_COUNT = 3;
     private static final int SLEEP_BETWEEN_TRY_SEND_MS = 2000;
 
@@ -41,12 +43,22 @@ public class YandexCourierImpl {
         this.yandexTokenProvider = yandexTokenProvider;
     }
 
-    public void updateDepots(List<DepotDto> depots) {
+    public BatchResponseDto updateDepots(List<DepotDto> depots) {
         HttpEntity<List<DepotDto>> request = createHttpEntity(depots);
-        Supplier<ResponseEntity<ResponseBatchDepotDto>> supplier =
+        Supplier<ResponseEntity<BatchResponseDto>> supplier =
                 ()-> restTemplate.exchange(getBaseUrl() + URL_DEPOTS_BATH,
-                        HttpMethod.POST, request, ResponseBatchDepotDto.class);
-        ResponseBatchDepotDto responce = sendRequest(supplier);
+                        HttpMethod.POST, request, BatchResponseDto.class);
+        BatchResponseDto responce = sendRequest(supplier);
+        return responce;
+    }
+
+    public BatchResponseDto updateCouriers(List<CourierDto> couriers) {
+        HttpEntity<List<CourierDto>> request = createHttpEntity(couriers);
+        Supplier<ResponseEntity<BatchResponseDto>> supplier =
+                ()-> restTemplate.exchange(getBaseUrl() + URL_COURIERS_BATH,
+                        HttpMethod.POST, request, BatchResponseDto.class);
+        BatchResponseDto responce = sendRequest(supplier);
+        return responce;
     }
 
     private <T>HttpEntity<T> createHttpEntity(T object) {
@@ -69,7 +81,6 @@ public class YandexCourierImpl {
              ResponseEntity<T> response = supplier.get();
              switch (response.getStatusCode()){
                  case OK :
-                     logger.info(String.format("response OK body %s", response.getBody()));
                      return response.getBody();
                  case UNAUTHORIZED :
                      yandexTokenProvider.refreshToken(getAppId());

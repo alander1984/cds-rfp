@@ -6,7 +6,7 @@ import lombok.Data;
  * Created by Ilya on 13.04.2019.
  */
 @Data
-public class ResponseBatchDepotDto {
+public class BatchResponseDto {
 
     private Integer inserted;
     private Integer updated;
