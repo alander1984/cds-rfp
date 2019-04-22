@@ -1,5 +1,6 @@
 package tech.lmru.cdsrfp.config;
 
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "cds-rfp", ignoreUnknownFields = true)
@@ -80,36 +81,22 @@ public class ApplicationProperties {
 		this.security = security;
 	}
     
- 
-    public class Yandex{
-        private String apiKey;
+ 	@Data
+    public static class Yandex{
+		private Courier courier = new Courier();
+		private String apiKey;
         private String url;
-		/**
-		 * @return the apiKey
-		 */
-		public String getApiKey() {
-			return apiKey;
+        private String authUrl;
+
+		@Data
+		public static class Courier{
+
+			private String clientId;
+			private String url;
+			private String applId;
+			private String token;//TODO ?????
 		}
-		/**
-		 * @param apiKey the apiKey to set
-		 */
-		public void setApiKey(String apiKey) {
-			this.apiKey = apiKey;
-		}
-		/**
-		 * @return the url
-		 */
-		public String getUrl() {
-			return url;
-		}
-		/**
-		 * @param url the url to set
-		 */
-		public void setUrl(String url) {
-			this.url = url;
-		}
-        
-        
+
     }
 
 

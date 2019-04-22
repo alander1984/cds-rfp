@@ -1,0 +1,5 @@
+spring:
+    datasource:
+        url: jdbc:postgresql://localhost:5432/lm_database
+        username: lm_user
+        password: lm_user
