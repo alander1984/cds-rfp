@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import tech.lmru.yandex.courier.service.CourierService;
 import tech.lmru.yandex.courier.service.DepotService;
+import tech.lmru.yandex.courier.service.RouteService;
 
 import javax.annotation.PostConstruct;
 
@@ -21,11 +22,13 @@ public class YandexCourierDataSynchronizer {
 
     private final DepotService depotService;
     private final CourierService courierService;
+    private final RouteService routeService;
 
     @Autowired
-    public YandexCourierDataSynchronizer(DepotService depotService, CourierService courierService) {
+    public YandexCourierDataSynchronizer(DepotService depotService, CourierService courierService, RouteService routeService) {
         this.depotService = depotService;
         this.courierService = courierService;
+        this.routeService = routeService;
     }
 
     @PostConstruct
@@ -37,6 +40,7 @@ public class YandexCourierDataSynchronizer {
         logger.info("Synchronization all data Yandex Courier");
         depotService.updateAll();
         courierService.updateAll();
+        routeService.updateAll();
         logger.info("Synchronization finished");
     }
 }

@@ -1,8 +1,8 @@
 package tech.lmru.yandex.courier.service.impl;
 
-import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.lmru.repo.DriverRepository;
 import tech.lmru.yandex.courier.dto.BatchResponseDto;
@@ -12,6 +12,8 @@ import tech.lmru.yandex.courier.util.MobilePhoneCreator;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static tech.lmru.yandex.courier.util.YandexCourierUtil.getCourierNumber;
 
 /**
  * Created by Ilya on 22.04.2019.
@@ -25,6 +27,7 @@ public class CourierServiceImpl implements CourierService {
     private final MobilePhoneCreator phoneCreator;
     private final YandexCourierImpl yandexCourier;
 
+    @Autowired
     public CourierServiceImpl(DriverRepository driverRepository, MobilePhoneCreator phoneCreator, YandexCourierImpl yandexCourier) {
         this.driverRepository = driverRepository;
         this.phoneCreator = phoneCreator;
@@ -38,7 +41,7 @@ public class CourierServiceImpl implements CourierService {
                 .map(dr -> CourierDto.builder()
                     .name(String.join(" ", dr.getName(), dr.getSurname()))
                     .phone(phoneCreator.createMobilePhone(null))//TODO
-                    .number(dr.getLogin())//TODO or getId?
+                    .number(getCourierNumber(dr))//TODO or login sinc from RouteService
                     .smsEnabled(true)
                     .build()
                 ).collect(Collectors.toList());

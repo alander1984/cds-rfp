@@ -35,7 +35,7 @@ public class DepotServiceImpl implements DepotService {
         logger.info("Start update depot");
         List<DepotDto> depots = getListStore().stream()
                 .map(st -> DepotDto.builder()
-                    .number(st.getCode())
+                    .number(st.getCode()) //TODO что это?
                     .name(st.getName())
                     .address(st.getAddress())
                     .description(st.getComment())
