@@ -21,5 +21,4 @@ ENV LANG="en_US.UTF-8" \
     LC_CTYPE="en_US.UTF-8" \
     LC_ALL="en_US.UTF-8" \
     JAVA_OPTS="$JAVA_OPTS -Dspring.profiles.active=devlm"
-
-COPY --from=build /opt/app/target/core-ui-app-*.war /usr/local/tomcat/webapps/cds-ui.war
+COPY --from=build /opt/app/target/cds-rfp-*.war /usr/local/tomcat/webapps/cds-rfp.war
