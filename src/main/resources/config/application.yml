@@ -14,6 +14,11 @@ cds-rfp:
     yandex:
         api-key: keykey
         url: https://courier.common.yandex.ru/vrs/api/v1
+        courier:
+            clientId: 558
+            url: https://courier.common.yandex.ru/api/v1/companies/${cds-rfp.yandex.courier.clientId}
+            applId: bb36b83f2b64419a8e2c5d57fcb0b5e7
+            token: AQAAAAAzh1PTAAWci0cpIWNTRkpSmroSNGNnyLA
 
 hibernate:
     temp:

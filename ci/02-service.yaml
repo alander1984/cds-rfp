@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cds-rfp
+  labels:
+    app: cds-rfp
+    tier: backend    
+spec:
+  type: NodePort
+  ports:
+   - name: tomcathttp
+     port: 8080
+   - name: grpc
+     port: 8030
+   - name: grpc-web
+     port: 8031
+  selector:
+    app: cds-rfp
+    tier: backend
