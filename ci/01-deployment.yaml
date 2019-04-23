@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cds-rfp
+  labels:
+    app: cds-rfp
+    tier: backend 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cds-rfp
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: cds-rfp
+        tier: backend
+    spec:
+      containers:
+      - name: ui
+        image: docker-local-customer-delivery-system.art.lmru.tech/cds/cds-rfp:0.3
+        envFrom:
+          - configMapRef:
+              name: cds-configmap
+        ports:
+        - name: tomcathttp 
+          containerPort: 8080
+        - name: grpc
+          containerPort: 8030
+      - name: oauth-envoy
+        image: docker-local-customer-delivery-system.art.lmru.tech/cds/envoy:0.3
+        imagePullPolicy: Always
+        ports:
+        - name: grpc-web
+          containerPort: 8031
