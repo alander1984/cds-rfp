@@ -194,7 +194,7 @@
     </repository>
     <snapshotRepository>
       <id>snapshots</id>
-      <name>napshots</name>
+      <name>snapshots</name>
       <url>https://art.lmru.tech/mvn-local-snapshots-customer-delivery-system</url>
     </snapshotRepository>
   </distributionManagement>
