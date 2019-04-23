@@ -3,7 +3,7 @@ FROM docker.art.lmru.tech/maven:3.6.0-jdk-8-slim as build
 WORKDIR /opt/app
 
 COPY . .
-
+RUN cat settings.xml
 RUN mvn clean package -s settings.xml -B -DskipTests
 
 FROM tomcat:9-jre8-slim
