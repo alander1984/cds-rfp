@@ -40,8 +40,8 @@ public class DeliveryZoneGRPCService
 
         for (tech.lmru.cdsrfp.service.CoordinateItem item : request.getCoordinateList()) {
             dz.addCoordinate(new tech.lmru.entity.deliveryzone.DeliveryZoneCoordinate(
-                    item.getLon(), item.getLat(), item.getPos())
-            );
+                    item.getLon(), item.getLat(), item.getPos()
+            ));
         }
 
         deliveryZoneRepository.save(dz);

@@ -103,7 +103,6 @@
     </dependencies>
 
     <build>
-
         <extensions>
             <extension>
                 <groupId>kr.motd.maven</groupId>
@@ -111,12 +110,12 @@
                 <version>1.5.0.Final</version>
             </extension>
         </extensions>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.1</version>
@@ -137,14 +136,17 @@
                 </executions>
             </plugin>
 
+
             <plugin>
                 <groupId>org.xolstice.maven.plugins</groupId>
                 <artifactId>protobuf-maven-plugin</artifactId>
                 <version>0.6.1</version>
                 <configuration>
-                    <protocArtifact>com.google.protobuf:protoc:${protoc.version}:exe:${os.detected.classifier}</protocArtifact>
+                    <protocArtifact>com.google.protobuf:protoc:${protoc.version}:exe:${os.detected.classifier}
+                    </protocArtifact>
                     <pluginId>grpc-java</pluginId>
-                    <pluginArtifact>io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}</pluginArtifact>
+                    <pluginArtifact>io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}
+                    </pluginArtifact>
                 </configuration>
                 <executions>
                     <execution>
@@ -189,5 +191,16 @@
             <url>https://repo.spring.io/milestone</url>
         </pluginRepository>
     </pluginRepositories>
-
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>releases</name>
+            <url>https://art.lmru.tech/mvn-local-release-customer-delivery-system</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>snapshots</name>
+            <url>https://art.lmru.tech/mvn-local-snapshots-customer-delivery-system</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
