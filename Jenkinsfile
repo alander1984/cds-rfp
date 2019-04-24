@@ -69,9 +69,9 @@ node ('internet-enabled') {
                 }
             }
 
-            stage ('Wipe') {
+/*            stage ('Wipe') {
                 cleanWs();
-            }
+            }*/
         }
     }
 }
