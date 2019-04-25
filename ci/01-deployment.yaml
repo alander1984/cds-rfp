@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: ui
-        image: docker-local-customer-delivery-system.art.lmru.tech/cds/cds-rfp:0.3
+        image: JENKINS_DOCKER_REGISTRY/JENKINS_DOCKER_IMAGE_NAME:JENKINS_DOCKER_IMAGE_TAG
         envFrom:
           - configMapRef:
               name: cds-configmap
@@ -29,7 +29,7 @@ spec:
         - name: grpc
           containerPort: 8030
       - name: oauth-envoy
-        image: docker-local-customer-delivery-system.art.lmru.tech/cds/envoy:0.3
+        image: JENKINS_DOCKER_REGISTRY/grpc-envoy-JENKINS_BRANCH_NAME:latest
         imagePullPolicy: Always
         ports:
         - name: grpc-web
