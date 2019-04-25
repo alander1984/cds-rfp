@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cds-rfp
+  labels:
+    app: cds-rfp
+    tier: backend 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cds-rfp
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: cds-rfp
+        tier: backend
+    spec:
+      containers:
+      - name: ui
+        image: JENKINS_DOCKER_REGISTRY/JENKINS_DOCKER_IMAGE_NAME:JENKINS_DOCKER_IMAGE_TAG
+        envFrom:
+          - configMapRef:
+              name: cds-configmap
+        ports:
+        - name: tomcathttp 
+          containerPort: 8080
+        - name: grpc
+          containerPort: 8030
+      - name: oauth-envoy
+        image: JENKINS_DOCKER_REGISTRY/grpc-envoy-JENKINS_BRANCH_NAME:latest
+        imagePullPolicy: Always
+        ports:
+        - name: grpc-web
+          containerPort: 8031

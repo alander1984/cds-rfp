@@ -1,9 +1,12 @@
 package tech.lmru.yandex.courier.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.lmru.entity.store.Store;
 import tech.lmru.repo.StoreRepository;
+import tech.lmru.yandex.courier.dto.BatchResponseDto;
 import tech.lmru.yandex.courier.dto.DepotDto;
 import tech.lmru.yandex.courier.service.DepotService;
 
@@ -16,6 +19,8 @@ import java.util.stream.Collectors;
 @Service
 public class DepotServiceImpl implements DepotService {
 
+    private Logger logger = LoggerFactory.getLogger(DepotServiceImpl.class);
+
     private final StoreRepository storeRepository;
     private final YandexCourierImpl yandexCourier;
 
@@ -26,10 +31,11 @@ public class DepotServiceImpl implements DepotService {
     }
 
     @Override
-    public void updateDepot() {
+    public void updateAll() {
+        logger.info("Start update depot");
         List<DepotDto> depots = getListStore().stream()
                 .map(st -> DepotDto.builder()
-                    .number(st.getCode())
+                    .number(st.getCode()) //TODO что это?
                     .name(st.getName())
                     .address(st.getAddress())
                     .description(st.getComment())
@@ -38,7 +44,8 @@ public class DepotServiceImpl implements DepotService {
                     .timeInterval("8:00-20:00")//TODO
                     .build())
                 .collect(Collectors.toList());
-        yandexCourier.updateDepots(depots);
+        BatchResponseDto resp = yandexCourier.updateDepots(depots);
+        logger.info("result {}", resp);
     }
 
     private List<Store> getListStore() {

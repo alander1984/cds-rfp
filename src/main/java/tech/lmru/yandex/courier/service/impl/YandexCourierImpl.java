@@ -10,8 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import tech.lmru.cdsrfp.config.ApplicationProperties;
+import tech.lmru.yandex.courier.dto.BatchResponseDto;
+import tech.lmru.yandex.courier.dto.CourierDto;
 import tech.lmru.yandex.courier.dto.DepotDto;
-import tech.lmru.yandex.courier.dto.ResponseBatchDepotDto;
+import tech.lmru.yandex.courier.dto.RouteDto;
 import tech.lmru.yandex.service.YandexTokenProvider;
 
 import java.util.List;
@@ -24,8 +26,11 @@ import java.util.function.Supplier;
 public class YandexCourierImpl {
 
     private static final String URL_DEPOTS_BATH = "/depots-batch";
+    private static final String URL_COURIERS_BATH = "/couriers-batch";
+    private static final String URL_ROUTES_BATH = "/routes-batch";
     private static final int TRY_COUNT = 3;
     private static final int SLEEP_BETWEEN_TRY_SEND_MS = 2000;
+    private static final int BATCH_YANDEX = 1000;
 
     private Logger logger = LoggerFactory.getLogger(YandexCourierImpl.class);
 
@@ -41,12 +46,16 @@ public class YandexCourierImpl {
         this.yandexTokenProvider = yandexTokenProvider;
     }
 
-    public void updateDepots(List<DepotDto> depots) {
-        HttpEntity<List<DepotDto>> request = createHttpEntity(depots);
-        Supplier<ResponseEntity<ResponseBatchDepotDto>> supplier =
-                ()-> restTemplate.exchange(getBaseUrl() + URL_DEPOTS_BATH,
-                        HttpMethod.POST, request, ResponseBatchDepotDto.class);
-        ResponseBatchDepotDto responce = sendRequest(supplier);
+    public BatchResponseDto updateDepots(List<DepotDto> depots) {
+        return batchUpdate(depots, URL_DEPOTS_BATH);
+    }
+
+    public BatchResponseDto updateCouriers(List<CourierDto> couriers) {
+        return batchUpdate(couriers, URL_COURIERS_BATH);
+    }
+
+    public BatchResponseDto updateRoutes(List<RouteDto> routeDtos) {
+        return batchUpdate(routeDtos, URL_ROUTES_BATH);
     }
 
     private <T>HttpEntity<T> createHttpEntity(T object) {
@@ -54,6 +63,24 @@ public class YandexCourierImpl {
         headers.add(HttpHeaders.AUTHORIZATION, "Auth " + yandexTokenProvider.getToken(getAppId()));
         HttpEntity entity = new HttpEntity(object, headers);
         return entity;
+    }
+
+    private <T extends List> BatchResponseDto batchUpdate(T listObjects, String url){
+        BatchResponseDto response = new BatchResponseDto();
+        for (int i = 0; i < listObjects.size(); i += BATCH_YANDEX) {
+            T sublist = (T) listObjects.subList(i, Math.min(i + BATCH_YANDEX, listObjects.size()));
+            HttpEntity<T> request = createHttpEntity(sublist);
+            Supplier<ResponseEntity<BatchResponseDto>> supplier =
+                    ()-> restTemplate.exchange(getBaseUrl() + url,
+                            HttpMethod.POST, request, BatchResponseDto.class);
+             addBatchResult(response, sendRequest(supplier));
+        }
+        return response;
+    }
+
+    private static void addBatchResult(BatchResponseDto response, BatchResponseDto currResponse){
+        response.setInserted((response.getInserted() != null ? response.getInserted() : 0) + currResponse.getInserted());
+        response.setUpdated((response.getUpdated() != null ? response.getUpdated() : 0) + currResponse.getUpdated());
     }
 
     private String getAppId() {
@@ -69,7 +96,6 @@ public class YandexCourierImpl {
              ResponseEntity<T> response = supplier.get();
              switch (response.getStatusCode()){
                  case OK :
-                     logger.info(String.format("response OK body %s", response.getBody()));
                      return response.getBody();
                  case UNAUTHORIZED :
                      yandexTokenProvider.refreshToken(getAppId());
@@ -81,7 +107,6 @@ public class YandexCourierImpl {
                      break;
                  default:
                      logger.error(String.format("Can't send request. Error: %s responce %s", response.getStatusCode(), response.getBody()));
-                     //throw new RuntimeException(String.format("Can't send request. Error: %s responce %s", response.getStatusCode(), response.getBody()));
              }
          }
          return null;

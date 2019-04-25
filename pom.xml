@@ -52,7 +52,7 @@
 		<dependency>
 			<groupId>tech.lmru</groupId>
 			<artifactId>cds-persistence</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -186,5 +186,16 @@
 			<url>https://repo.spring.io/milestone</url>
 		</pluginRepository>
 	</pluginRepositories>
-
+  <distributionManagement>
+    <repository>
+      <id>releases</id>
+      <name>releases</name>
+      <url>https://art.lmru.tech/mvn-local-release-customer-delivery-system</url>
+    </repository>
+    <snapshotRepository>
+      <id>snapshots</id>
+      <name>snapshots</name>
+      <url>https://art.lmru.tech/mvn-local-snapshots-customer-delivery-system</url>
+    </snapshotRepository>
+  </distributionManagement>
 </project>

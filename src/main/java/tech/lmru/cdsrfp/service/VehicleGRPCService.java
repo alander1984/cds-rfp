@@ -1,20 +1,27 @@
 package tech.lmru.cdsrfp.service;
 
 import io.grpc.stub.StreamObserver;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.Collections;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import tech.lmru.grpc.GRPCService;
 import tech.lmru.repo.VehicleRepository;
+import tech.lmru.entity.transport.Driver;
+import tech.lmru.cdsrfp.service.Vehicle.Builder;
 
 @GRPCService
 public class VehicleGRPCService extends
     tech.lmru.cdsrfp.service.VehicleServiceGrpc.VehicleServiceImplBase {
 
   private VehicleRepository repository;
+  private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
   @Autowired
   public VehicleGRPCService(VehicleRepository repository) {
@@ -32,7 +39,23 @@ public class VehicleGRPCService extends
     vehicle.setCapacity(request.getCapacity());
     vehicle.setTonnage(request.getTonnage());
 
+    if(!request.getDriversList().isEmpty()){
+              Set<Driver> collect = request.getDriversList().stream()
+              .map(driver -> {
+                        Driver d = new Driver();
+                        d.setId(driver.getId());
+                        d.setSurname(driver.getSurname());
+                        d.setName(driver.getName());
+                        d.setPatronymic(driver.getPatronymic());
+                        //d.setBirthday(LocalDateTime.parse(driver.getBirthday(), formatter));
+                        d.setLogin(driver.getLogin());
+                        d.setPassword(driver.getPassword());
+                        return d;
+              }).collect(Collectors.toSet());
 
+          vehicle.setDrivers(collect);
+        }
+    
     tech.lmru.entity.transport.Vehicle save = repository.save(vehicle);
     EntityCreateResponse response = EntityCreateResponse.newBuilder().setId(save.getId()).build();
 
@@ -75,14 +98,34 @@ public class VehicleGRPCService extends
     if (all.isEmpty()){
       response = VehicleAllResponse.newBuilder().build();
     } else {
-      List<Vehicle> collect = all.stream().map(vehicle -> Vehicle.newBuilder()
+      List<Vehicle> collect = all.stream().map(vehicle -> {
+          Builder build = Vehicle.newBuilder()
           .setId(vehicle.getId())
           .setCapacity(vehicle.getCapacity())
           .setModel(vehicle.getModel())
           .setRegistrationNumber(vehicle.getRegistrationNumber())
-          .setTonnage(vehicle.getTonnage())
-          .build()).collect(Collectors.toList());
+          .setTonnage(vehicle.getTonnage());
+          //.build()).collect(Collectors.toList());
+          if(!vehicle.getDrivers().isEmpty()){
+              List<tech.lmru.cdsrfp.service.Driver> collect1 = vehicle.getDrivers().stream()
+              .map(driver ->
+                  tech.lmru.cdsrfp.service.Driver.newBuilder()
+                        .setId(driver.getId())
+                        .setSurname(driver.getSurname())
+                        .setName(driver.getName())
+                        .setPatronymic(driver.getPatronymic())
+                        .setBirthday(driver.getBirthday().toString())
+                        .setLogin(driver.getLogin())
+                        .setPassword(driver.getPassword())
+                        .build()
+              ).collect(Collectors.toList());
 
+          build.addAllDrivers(collect1);
+        } else {
+          build.addAllDrivers(Collections.EMPTY_LIST);
+        }
+          return build.build();
+      }).collect(Collectors.toList());
       response = VehicleAllResponse.newBuilder().addAllVehicles(collect).build();
     }
 
