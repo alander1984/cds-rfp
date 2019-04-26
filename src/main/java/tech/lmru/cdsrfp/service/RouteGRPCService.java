@@ -41,7 +41,6 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
   }
 
   
-  @Transactional
   @Override
   public void createOrUpdateRoute(Route request,
       StreamObserver<EntityCreateResponse> responseObserver) {
@@ -110,7 +109,7 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
             tech.lmru.entity.route.RoutePoint point = new tech.lmru.entity.route.RoutePoint();
             point.setPos(routePoint.getPos());
             point.setArrivalTime(BigDecimal.valueOf(routePoint.getArrivalTime()));
-
+            point.setId(routePoint.getId());
             tech.lmru.entity.order.Delivery delivery = new tech.lmru.entity.order.Delivery();
             delivery.setId(routePoint.getDelivery().getId());
             point.setDelivery(delivery);
@@ -118,21 +117,31 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
           }).collect(Collectors.toList());
 
       if (routerPoints != null && !routerPoints.isEmpty()) {
+          
+          for(tech.lmru.entity.route.RoutePoint rp : routerPoints) {
+              System.out.println("#####" + rp.getId());
+          }
+          
+          for(tech.lmru.entity.route.RoutePoint rp : collect) {
+              System.out.println("!!!!!!" + rp.getId());
+          }
 
-//          for(tech.lmru.entity.route.RoutePoint rp : routerPoints) {
-//              boolean isExist = false;
-//              for(tech.lmru.entity.route.RoutePoint rp1 : collect) {
-//                  if(rp1.getId() == rp.getId()) {
-//                      isExist = true;
-//                  }
-//              }
-//              
-//              if(!isExist) {
-//                  tech.lmru.entity.order.Delivery delivery = rp.getDelivery();
-//                  delivery.setStatus(tech.lmru.entity.order.DeliveryStatusEnum.NEW);
-//                  deliveryRepository.save(delivery);
-//              }
-//          }
+          for(tech.lmru.entity.route.RoutePoint rp : routerPoints) {
+              boolean isExist = false;
+              for(tech.lmru.entity.route.RoutePoint rp1 : collect) {
+                  if(rp1.getId() == rp.getId()) {
+                      isExist = true;
+                  }
+              }
+              
+              if(!isExist) {
+                  System.out.println("@@@@@ DELETD ROUTE POINT ID = "   + rp.getId());
+                  tech.lmru.entity.order.Delivery delivery = rp.getDelivery();
+                  delivery.setStatus(tech.lmru.entity.order.DeliveryStatusEnum.NEW);
+                  logger.info("@@@@@@@@@@@@@@@@@@BEFORE SAVE DELIVERY");
+                  deliveryRepository.save(delivery);
+              }
+          }
         collect.addAll(routerPoints);
       }
 
@@ -326,53 +335,4 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
       responseObserver.onCompleted();
     }
   }
-  
-  
-  @Override
-  @Transactional
-  public void acceptRouteGPSData(RouteTrackPacket request, 
-    StreamObserver<RouteTrackResponse> responseObserver) {
-        logger.warn("entering acceptRouteGPSData");
-        List<tech.lmru.entity.route.RouteTrack> routerTracks = null;
-        tech.lmru.entity.route.Route routeExist = null;
-        if (!request.getRouteTrackList().isEmpty()){
-          List<tech.lmru.entity.route.RouteTrack> collect = request.getRouteTrackList().stream()
-              .map(routeTrack -> {
-                tech.lmru.entity.route.RouteTrack track = new tech.lmru.entity.route.RouteTrack();
-                track.setTimestamp(routeTrack.getTimeStamp());
-                track.setLat(routeTrack.getLat());
-                track.setLon(routeTrack.getLon());
-    
-                return track;
-              }).collect(Collectors.toList());
-    
-          Optional<tech.lmru.entity.route.Route> byId = repository.findById(request.getRouteId());
-          if (byId.isPresent()){
-            routeExist = byId.get();
-            routerTracks = routeExist.getRouteTracks();
-            if (routerTracks != null && !routerTracks.isEmpty()) {
-                collect.addAll(routerTracks);
-            }
-            routeExist.setRouteTracks(routerTracks);
-            try {
-                repository.save(routeExist);
-                responseObserver.onNext(RouteTrackResponse.newBuilder().setResult(true).build());
-            } catch(Exception e) {
-                logger.warn(e.getMessage());
-                responseObserver.onNext(RouteTrackResponse.newBuilder().setResult(false).build());
-            } finally {
-                responseObserver.onCompleted();
-            } 
-          } else {
-              logger.warn("route with id = " + request.getRouteId() + "not found");
-              responseObserver.onNext(RouteTrackResponse.newBuilder().setResult(false).build());
-              responseObserver.onCompleted();
-          }
-
-        } else {
-            logger.warn("empty route track list in request");
-            responseObserver.onNext(RouteTrackResponse.newBuilder().setResult(false).build());
-            responseObserver.onCompleted();
-        }
-    }
 }
