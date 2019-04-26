@@ -41,6 +41,7 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
   }
 
   
+  @Transactional
   @Override
   public void createOrUpdateRoute(Route request,
       StreamObserver<EntityCreateResponse> responseObserver) {
