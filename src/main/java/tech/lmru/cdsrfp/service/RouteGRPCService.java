@@ -41,6 +41,7 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
   }
 
   
+  @Transactional
   @Override
   public void createOrUpdateRoute(Route request,
       StreamObserver<EntityCreateResponse> responseObserver) {
@@ -118,30 +119,30 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
 
       if (routerPoints != null && !routerPoints.isEmpty()) {
           
-          for(tech.lmru.entity.route.RoutePoint rp : routerPoints) {
-              System.out.println("#####" + rp.getId());
-          }
-          
-          for(tech.lmru.entity.route.RoutePoint rp : collect) {
-              System.out.println("!!!!!!" + rp.getId());
-          }
-
-          for(tech.lmru.entity.route.RoutePoint rp : routerPoints) {
-              boolean isExist = false;
-              for(tech.lmru.entity.route.RoutePoint rp1 : collect) {
-                  if(rp1.getId() == rp.getId()) {
-                      isExist = true;
-                  }
-              }
-              
-              if(!isExist) {
-                  System.out.println("@@@@@ DELETD ROUTE POINT ID = "   + rp.getId());
-                  tech.lmru.entity.order.Delivery delivery = rp.getDelivery();
-                  delivery.setStatus(tech.lmru.entity.order.DeliveryStatusEnum.NEW);
-                  logger.info("@@@@@@@@@@@@@@@@@@BEFORE SAVE DELIVERY");
-                  deliveryRepository.save(delivery);
-              }
-          }
+//          for(tech.lmru.entity.route.RoutePoint rp : routerPoints) {
+//              System.out.println("#####" + rp.getId());
+//          }
+//          
+//          for(tech.lmru.entity.route.RoutePoint rp : collect) {
+//              System.out.println("!!!!!!" + rp.getId());
+//          }
+//
+//          for(tech.lmru.entity.route.RoutePoint rp : routerPoints) {
+//              boolean isExist = false;
+//              for(tech.lmru.entity.route.RoutePoint rp1 : collect) {
+//                  if(rp1.getId() == rp.getId()) {
+//                      isExist = true;
+//                  }
+//              }
+//              
+//              if(!isExist) {
+//                  System.out.println("@@@@@ DELETD ROUTE POINT ID = "   + rp.getId());
+//                  tech.lmru.entity.order.Delivery delivery = rp.getDelivery();
+//                  delivery.setStatus(tech.lmru.entity.order.DeliveryStatusEnum.NEW);
+//                  logger.info("@@@@@@@@@@@@@@@@@@BEFORE SAVE DELIVERY");
+//                  deliveryRepository.save(delivery);
+//              }
+//          }
         collect.addAll(routerPoints);
       }
 
