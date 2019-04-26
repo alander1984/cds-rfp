@@ -54,20 +54,4 @@ spring:
             hibernate.format_sql: true
             hibernate.use_sql_comments: true
             hibernate.temp.use_jdbc_metadata_defaults: false  
-    rabbitmq:
-        host: 10.9.68.100
-        port: 11293
-        username: tms 
-        password: 123
-        virtual-host: delivery-shipment
-        ssl:
-            enabled: true
-            trust-store: /drssl/lmru.jks
-            trust-store-password: leroymerlin
-            key-store: /drssl/keycert.p12
-            key-store-password: leroy 
-            key-store-type: PKCS12
-            algorithm: TLSv1
-        listener:
-            auto-startup: true
             
