@@ -6,8 +6,8 @@ import "common.proto";
 //package deliveryservice;
 
 message CoordinateItem {
-    double lat = 1;
-    double lon = 2;
+    double lon = 1;
+    double lat = 2;
     int32 pos = 3;
 }
 
