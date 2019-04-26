@@ -1,6 +1,9 @@
 package tech.lmru.cdsrfp.service;
 
 import io.grpc.stub.StreamObserver;
+import tech.lmru.entity.deliveryzone.DeliveryZoneCoordinate;
+import tech.lmru.entity.store.Store;
+import tech.lmru.entity.transport.TransportCompany;
 import tech.lmru.grpc.GRPCService;
 import tech.lmru.repo.DeliveryZoneCoordinateRepository;
 import tech.lmru.repo.DeliveryZoneRepository;
@@ -81,4 +84,59 @@ public class DeliveryZoneGRPCService
         responseObserver.onNext(Empty.getDefaultInstance());
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void getDeliveryZoneList(Empty request, StreamObserver<DeliveryZoneList> responseObserver) {
+
+        DeliveryZoneList.Builder responseBuilder = DeliveryZoneList.newBuilder();
+
+        for (tech.lmru.entity.deliveryzone.DeliveryZone that : deliveryZoneRepository.findAll()) {
+
+            Store ownStore = that.getOwnStore();
+            TransportCompany ownTransportCompany  = that.getOwnTransportCompany();
+
+            responseBuilder.addDeliveryZone(DeliveryZoneListItem.newBuilder()
+                    .setDeliveryZone(               fromEntity(that))
+                    .setOwnStoreId(                 ownStore.getId())
+                    .setOwnStoreName(               ownStore.getName())
+                    .setOwnTransportCompanyId(      ownTransportCompany.getId())
+                    .setOwnTransportCompanyName(    ownTransportCompany.getName())
+                    .build());
+        }
+
+        responseObserver.onNext(responseBuilder.build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getDeliveryZoneById(DeliveryZoneId request, StreamObserver<DeliveryZone> responseObserver) {
+        long zoneId = request.getId();
+        tech.lmru.entity.deliveryzone.DeliveryZone dzEntity =  deliveryZoneRepository.findById(zoneId).get();
+
+        responseObserver.onNext(this.fromEntity(dzEntity));
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void removeDeliveryZoneById(DeliveryZoneId request, StreamObserver<Empty> responseObserver) {
+        // TODO: need implement
+        super.removeDeliveryZoneById(request, responseObserver);
+    }
+
+    private DeliveryZone fromEntity(tech.lmru.entity.deliveryzone.DeliveryZone entity){
+        DeliveryZone.Builder builder = DeliveryZone.newBuilder().setId(entity.getId());
+        List<DeliveryZoneCoordinate> coordinateList = entity.getCoordinateList();
+        for (int i = 0, size = coordinateList.size(); i < size; i++) {
+            DeliveryZoneCoordinate c = coordinateList.get(i);
+            builder.addCoordinate(
+                    CoordinateItem.newBuilder()
+                            .setPos(i)
+                            .setLon(c.getLon().doubleValue())
+                            .setLat(c.getLat().doubleValue())
+                            .build()
+            );
+        }
+        return builder.build();
+    }
+
 }

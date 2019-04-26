@@ -58,9 +58,9 @@
           </execution>
         </executions>
         <configuration>
-          <protocArtifact>com.google.protobuf:protoc:3.6.1:exe:${os.detected.classifier}</protocArtifact>
+          <protocArtifact>com.google.protobuf:protoc:${protoc.version}:exe:${os.detected.classifier}</protocArtifact>
           <pluginId>grpc-java</pluginId>
-          <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.19.0:exe:${os.detected.classifier}</pluginArtifact>
+          <pluginArtifact>io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}</pluginArtifact>
         </configuration>
       </plugin>
     </plugins>
@@ -197,7 +197,7 @@
     <dependency>
       <groupId>tech.lmru</groupId>
       <artifactId>cds-persistence</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
+      <version>0.0.3-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -244,13 +244,34 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-amqp</artifactId>
+      <version>2.2.0.BUILD-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>1.18.6</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
+  <distributionManagement>
+    <repository>
+      <id>releases</id>
+      <name>releases</name>
+      <url>https://art.lmru.tech/mvn-local-release-customer-delivery-system</url>
+    </repository>
+    <snapshotRepository>
+      <id>snapshots</id>
+      <name>snapshots</name>
+      <url>https://art.lmru.tech/mvn-local-snapshots-customer-delivery-system</url>
+    </snapshotRepository>
+  </distributionManagement>
   <properties>
+    <protoc.version>3.6.1</protoc.version>
     <java.version>1.8</java.version>
+    <cds.persistence.version>0.0.3-SNAPSHOT</cds.persistence.version>
+    <grpc.version>1.19.0</grpc.version>
   </properties>
 </project>

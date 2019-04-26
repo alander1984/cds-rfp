@@ -16,9 +16,28 @@ message DeliveryZone {
     repeated CoordinateItem coordinate = 2;
 }
 
+message DeliveryZoneList {
+    repeated DeliveryZoneListItem deliveryZone = 1;
+}
+
+message DeliveryZoneListItem {
+    DeliveryZone deliveryZone = 1;
+    int64 ownStoreId = 2;
+    string ownStoreName = 3;
+    int64 ownTransportCompanyId = 4;
+    string ownTransportCompanyName = 5;
+}
+
+message DeliveryZoneId{
+    int64 id = 1;
+}
+
 service DeliveryZoneService {
+    rpc getDeliveryZoneList(Empty) returns (DeliveryZoneList);
+    rpc getDeliveryZoneById(DeliveryZoneId) returns (DeliveryZone);
     rpc createDeliveryZone(DeliveryZone) returns (Empty);
     rpc updateDeliveryZone(DeliveryZone) returns (Empty);
+    rpc removeDeliveryZoneById(DeliveryZoneId) returns (Empty);
 }
 
 
