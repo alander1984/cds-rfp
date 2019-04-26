@@ -11,7 +11,7 @@ import tech.lmru.cdsrfp.config.ApplicationProperties;
 @SpringBootApplication
 @EnableConfigurationProperties({ApplicationProperties.class})
 @EnableJpaRepositories(basePackages = "tech.lmru")
-@ComponentScan({"tech.lmru.cdsrfp", "tech.lmru.yandex"})
+@ComponentScan({"tech.lmru.cdsrfp", "tech.lmru.yandex", "tech.lmru.integration.adeo"})
 public class CdsRfpApplication {
 
     public static void main(String[] args) {
