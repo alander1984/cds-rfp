@@ -19,6 +19,7 @@ import tech.lmru.cdsrfp.service.Route.Builder;
 import tech.lmru.entity.plan.OptimizationTask;
 import tech.lmru.entity.transport.Vehicle;
 import tech.lmru.grpc.GRPCService;
+import tech.lmru.repo.DeliveryRepository;
 import tech.lmru.repo.RouteRepository;
 import tech.lmru.yandex.service.RouteOptimizer;
 
@@ -29,15 +30,17 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
 
   private RouteOptimizer routeOptimizer;
   private RouteRepository repository;
+  private DeliveryRepository deliveryRepository;
   private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
   @Autowired
-  public RouteGRPCService(RouteOptimizer routeOptimizer, RouteRepository repository) {
+  public RouteGRPCService(RouteOptimizer routeOptimizer, RouteRepository repository, DeliveryRepository deliveryRepository) {
     this.routeOptimizer = routeOptimizer;
     this.repository = repository;
+    this.deliveryRepository = deliveryRepository;
   }
 
-  @Transactional
+  
   @Override
   public void createOrUpdateRoute(Route request,
       StreamObserver<EntityCreateResponse> responseObserver) {
@@ -114,6 +117,21 @@ public class RouteGRPCService extends RouteServiceGrpc.RouteServiceImplBase {
           }).collect(Collectors.toList());
 
       if (routerPoints != null && !routerPoints.isEmpty()) {
+
+//          for(tech.lmru.entity.route.RoutePoint rp : routerPoints) {
+//              boolean isExist = false;
+//              for(tech.lmru.entity.route.RoutePoint rp1 : collect) {
+//                  if(rp1.getId() == rp.getId()) {
+//                      isExist = true;
+//                  }
+//              }
+//              
+//              if(!isExist) {
+//                  tech.lmru.entity.order.Delivery delivery = rp.getDelivery();
+//                  delivery.setStatus(tech.lmru.entity.order.DeliveryStatusEnum.NEW);
+//                  deliveryRepository.save(delivery);
+//              }
+//          }
         collect.addAll(routerPoints);
       }
 
