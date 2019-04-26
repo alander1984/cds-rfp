@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tech.lmru.grpc.GRPCService;
 import tech.lmru.repo.VehicleRepository;
 import tech.lmru.entity.transport.Driver;
+import tech.lmru.entity.transport.TransportCompany;
 import tech.lmru.cdsrfp.service.Vehicle.Builder;
 
 @GRPCService
@@ -56,6 +57,17 @@ public class VehicleGRPCService extends
           vehicle.setDrivers(collect);
         }
     
+    if(!request.getTransportCompaniesList().isEmpty()){
+            Set<TransportCompany> collect1 = request.getTransportCompaniesList().stream()
+            .map(tc -> {
+                    TransportCompany t = new TransportCompany();
+                    t.setId(tc.getId());
+                    t.setCode(tc.getCode());
+                    t.setName(tc.getName());
+                    return t;
+            }).collect(Collectors.toSet());
+        vehicle.setTransportCompanies(collect1);
+    }
     tech.lmru.entity.transport.Vehicle save = repository.save(vehicle);
     EntityCreateResponse response = EntityCreateResponse.newBuilder().setId(save.getId()).build();
 
@@ -124,6 +136,21 @@ public class VehicleGRPCService extends
         } else {
           build.addAllDrivers(Collections.EMPTY_LIST);
         }
+        
+        if(!vehicle.getTransportCompanies().isEmpty()){
+            List<tech.lmru.cdsrfp.service.TransportCompany> collect2 = vehicle.getTransportCompanies().stream()
+            .map(tc ->
+                tech.lmru.cdsrfp.service.TransportCompany.newBuilder()
+                        .setId(tc.getId())
+                        .setCode(tc.getCode())
+                        .setName(tc.getName())
+                        .build()
+            ).collect(Collectors.toList());
+            build.addAllTransportCompanies(collect2);
+        } else {
+          build.addAllTransportCompanies(Collections.EMPTY_LIST);
+        }
+
           return build.build();
       }).collect(Collectors.toList());
       response = VehicleAllResponse.newBuilder().addAllVehicles(collect).build();

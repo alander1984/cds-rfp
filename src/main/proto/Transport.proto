@@ -25,7 +25,7 @@ message Vehicle {
     string tonnage = 4;
     string capacity = 5;
     repeated Driver drivers = 6;
-    TransportCompany transportCompany = 7;
+    repeated TransportCompany transportCompanies = 7;
 }
 
 message TransportCompany {

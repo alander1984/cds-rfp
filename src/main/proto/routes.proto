@@ -76,4 +76,5 @@ service RouteService {
    rpc readAllRoutes(Empty) returns (RouteAllResponse);
    rpc deleteByIdRoute(EntityIdRequest) returns (EntityDeleteResponse);
    rpc acceptRouteGPSData(RouteTrackPacket) returns (RouteTrackResponse);
+   rpc getDriverActiveroute(Empty) returns (Empty);
 }
